@@ -11,7 +11,7 @@ interface State {
 
 export default class Character extends React.Component <Props, State> {
     private counter: number
-    static palette = '!@#$%^&*_+~±§?><.,..*;::±±'.split('')
+    static palette = 'qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm1234567890qwertyuiopasdfghjklzxcvbnmqwertyuiopasdfghjklzxcvbnm'.split('')
     private length: number
     private startTime: number
     constructor(props:Props){
@@ -23,8 +23,9 @@ export default class Character extends React.Component <Props, State> {
             char: this.getChar(),
             done: false
         }
-        // console.log(this.startTime)
-        window.setTimeout(()=>this.decode(),10)
+    }
+    componentDidMount(){
+        this.decode()
     }
     componentDidUpdate(){
         const delay = 100 + Math.ceil(Math.random()*100)
@@ -32,9 +33,11 @@ export default class Character extends React.Component <Props, State> {
         else window.setTimeout(()=>this.decode(),delay)
     }
     getChar(){
+        const {children} = this.props
         const done = this.state && this.state.done
         const idx = Math.ceil(Math.random()*this.length)
-        return !done ? Character.palette[idx]:this.props.children
+        const char = children == ' ' ? children:Character.palette[idx]
+        return !done ? char:children
     }
     decode(){
         const char = this.getChar()

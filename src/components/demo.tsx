@@ -16,7 +16,7 @@ export default class Demo extends React.Component<Props, State> {
         return (
             <div style={{margin:'20px'}}>
               <Paragraph deadLine={1000}>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Impedit recusandae doloremque magni sequi illum voluptatibus rem rerum non in odio?
+                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia dolorum cumque accusantium perspiciatis, minima sequi deleniti qui vel minus magni, vitae officiis, aspernatur. Accusantium blanditiis adipisci provident, vitae minus voluptatem id eaque quam error assumenda molestiae deleniti, placeat. Sit temporibus labore delectus blanditiis ullam, consectetur sint nam vitae at eos!
               </Paragraph>
             </div>
         )

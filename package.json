@@ -23,8 +23,8 @@
   },
   "homepage": "https://github.com/GaryGolf/react-components#readme",
   "devDependencies": {
-    "@types/react": "^15.0.34",
-    "@types/react-dom": "^15.5.1",
+    "@types/react": "^16.0.1",
+    "@types/react-dom": "^15.5.2",
     "css-loader": "^0.28.4",
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
