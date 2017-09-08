@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import Paragraph from './paragraph/paragpaph'
+import Paragraph from './paragraph/paragraph'
 
 interface Props {}
 interface State {}
@@ -11,7 +11,7 @@ export default class Demo extends React.Component<Props, State> {
         super(props)
 
     }
-
+ 
     render(){
         return (
             <div style={{margin:'20px'}}>
