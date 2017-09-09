@@ -53,6 +53,7 @@
     "webpack-hot-middleware": "^2.18.1"
   },
   "dependencies": {
+    "cleave.js": "^1.0.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
   }
