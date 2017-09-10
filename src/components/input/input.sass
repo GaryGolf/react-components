@@ -1,0 +1,49 @@
+$input-padding: 15px
+$input-height: 40px
+$input-icon-size: 15px
+$color-gray: #eee
+$color-red: red
+$color-border-blue: lightblue
+$ui-hint-font-size: .9em
+
+@mixin input-border-color($color)
+  border-color: $color
+  border-width: 1px
+
+  &:hover
+    border-color: darken($color, 6%)
+
+.input-container
+  display: inline-block
+  position: relative
+
+  .input-element
+    width: 100%
+    padding: 1px $input-padding 2px
+    height: $input-height
+    line-height: $input-height
+    font-size: $ui-hint-font-size + 0.2
+
+    @include input-border-color($color-gray)
+
+    &:focus,
+    &:active
+      @include input-border-color($color-border-blue)
+
+  .input-hint
+    color: $color-gray
+    font-size: $ui-hint-font-size
+    margin: 5px 0 0
+    padding: 0 1px
+
+  .input-error
+    color: $color-red
+    font-size: $ui-hint-font-size
+    margin: 0 0 0
+    padding: 0 1px
+    position: absolute
+    top: 100%
+
+  .input-error + &,
+  .input-hint + &
+    margin-top: 0

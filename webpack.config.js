@@ -5,7 +5,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
 const sourcePath = path.join(__dirname, './src')
 const PRODUCTION = process.argv.indexOf('-p') >= 0
-const outPath = PRODUCTION ? path.join(__dirname, '../api/webroot') : path.join(__dirname, './dist')
+const outPath = path.join(__dirname, './dist')
 
 module.exports = {
   context: sourcePath,
@@ -35,13 +35,17 @@ module.exports = {
       },
       {
         test: /\.tsx?$/,
-          loader: PRODUCTION ? 'ts-loader' : ['react-hot-loader', 'ts-loader']
+        use: PRODUCTION ? 'ts-loader' : ['react-hot-loader', 'ts-loader']
       },
       // css 
       {
+        test: /\.sass$/,
+        use: ["style-loader", "css-loader", "sass-loader"],
+      },
+      {
         test: /\.css$/,
         loader: ExtractTextPlugin.extract({
-          fallbackLoader: 'style-loader',
+          fallback: 'style-loader',
           loader: [
             {
               loader: 'css-loader',
