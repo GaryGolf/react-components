@@ -18,7 +18,6 @@ export default (props:Props) => {
       <Cleave
         className="input-element"
         options={{phone: true, phoneRegionCode: 'RU'}}
-        type={"phone"}
         {...restInputProps}
       />
       {iconLeft &&

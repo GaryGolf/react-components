@@ -15,9 +15,9 @@ storiesOf('Button', module)
   .add('with some emoji', () => <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>);
 
 storiesOf('Input', module)
-  .add('custom input', () => <Input.Phone />)
+  .add('custom input', () => <Input.Phone/>)
   .add('disabled', () => <Input.Phone disabled={true}/>)
   .add('placeholder', () => <Input.Phone placeholder="Enter phone number"/>)
   .add('hint', () => <Input.Phone hint="например: +7 495 234 56 78"/>)
-  .add('error', () => <Input.Phone error="эх ... деревня"/>)
+  .add('error', () => <Input.Phone error="Error: message"/>)
 
