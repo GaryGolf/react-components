@@ -3,6 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { linkTo } from '@storybook/addon-links';
+import {WithNotes} from '@storybook/addon-notes'
 
 import { Button, Welcome } from '@storybook/react/demo';
 
@@ -19,5 +20,10 @@ storiesOf('Input', module)
   .add('disabled', () => <Input.Phone disabled={true}/>)
   .add('placeholder', () => <Input.Phone placeholder="Enter phone number"/>)
   .add('hint', () => <Input.Phone hint="например: +7 495 234 56 78"/>)
-  .add('error', () => <Input.Phone error="Error: message"/>)
+  .add('error', () => (
+    <WithNotes notes={'error message'}>
+      <Input.Phone error="Error: message"/>
+    </WithNotes>
+  ))
+  .add('validation', () => <Input.Phone onBlur={action('validate')}/>)
 
