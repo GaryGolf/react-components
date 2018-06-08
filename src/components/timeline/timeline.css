@@ -1,12 +1,26 @@
 .container {
-  height: 60px;
+  height: 6rem;
   width: 100px;
   overflow-y: scroll;
-  /* overflow: hidden scroll; */
 }
 
+@supports ( (scroll-snap-type: mandatory) ) {
+  .container {
+    height: 6rem;
+    width: 100px;
+    overflow-y: scroll;
+    scroll-snap-type: mandatory;
+    scroll-behavior: smooth;
+    background: lightcyan;
+  }
+}
 .frame {
-  height: 60px;
+  height: 6rem;
   width: 60px;
   overflow-x: hidden;
+}
+
+.dayitem {
+  line-height: 2rem;
+  scroll-snap-coordinate: 0 0;
 }
