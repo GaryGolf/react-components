@@ -13,7 +13,7 @@ export default class TimeLine extends React.Component<Props, State> {
   private timeline: HTMLDivElement;
   private top = false;
   private bot = false;
-  private months = ['june', 'july', 'august', 'september'];
+  private months = ['june', 'july', 'august', 'september', 'october', 'november', 'december' ];
 
   public constructor(props:Props) {
     super(props);
@@ -126,6 +126,14 @@ export default class TimeLine extends React.Component<Props, State> {
     //   </div>
     // )
 
-    return <ScrollOver maxWidth="80px" maxHeight="200px">{rows} </ScrollOver>
+    return (
+      <ScrollOver maxWidth="100px" maxHeight="160px">
+        {past}
+        <ScrollOver maxWidth="100px" maxHeight="72px">
+          {rows}
+        </ScrollOver>
+        {futr}
+      </ScrollOver>
+    )
   }
 }

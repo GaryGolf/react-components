@@ -1,15 +1,20 @@
 .scrollover {
-  background: silver;
   position: relative;
   overflow-x: hidden;
 }
 
 .scrollcontainer {
   overflow-y: auto;
+  scroll-snap-type: mandatory;
 }
 
 .scrollcontainer::-webkit-scrollbar {
   display: none;
+}
+
+.scrollcontainer div:not([data-dir]) {
+  cursor: pointer;
+  scroll-snap-coordinate: 0 0;
 }
 
 .topbutton {

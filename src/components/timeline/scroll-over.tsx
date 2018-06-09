@@ -2,13 +2,12 @@ import * as React from 'react';
 import * as styles from './scroll-over.css';
 
 interface Props {
-  children: (string | JSX.Element[])[];
-  maxWidth: string;
-  maxHeight: string;
+  children?: JSX.Element | JSX.Element[] | any;
+  maxWidth?: string;
+  maxHeight?: string;
 };
 
 const TIMEOUT = 20;
-const OFFSET = 50;
 
 export default class ScrollOver extends React.PureComponent<Props, null> {
   private scrollContainer: HTMLDivElement;
@@ -33,7 +32,8 @@ export default class ScrollOver extends React.PureComponent<Props, null> {
   private handleMouseClick = (event:React.MouseEvent<HTMLDivElement>) => {
     const element = event.currentTarget;
     const direction = element.dataset.dir;
-    this.scrollTo(direction, OFFSET);
+    const height = direction == 'up' ? this.scrollContainer.scrollHeight : 0;
+    this.scrollContainer.scroll(0, height);
   }
 
   render() {
