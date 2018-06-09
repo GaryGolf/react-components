@@ -7,10 +7,12 @@ interface Props {
   maxHeight: string;
 };
 
+const TIMEOUT = 20;
+const OFFSET = 50;
+
 export default class ScrollOver extends React.PureComponent<Props, null> {
   private scrollContainer: HTMLDivElement;
   private scrollInterval;
-  private timeout = 25;
 
   private scrollTo = (direction, offset = 2) => {
     const top = this.scrollContainer.scrollTop;
@@ -21,7 +23,7 @@ export default class ScrollOver extends React.PureComponent<Props, null> {
   private handleMouseOver = (event:React.MouseEvent<HTMLDivElement>) => {
     const element = event.currentTarget;
     const direction = element.dataset.dir;
-    this.scrollInterval = setInterval(() => this.scrollTo(direction), 20);
+    this.scrollInterval = setInterval(() => this.scrollTo(direction), TIMEOUT);
   }
 
   private handleMouseOut = (event:React.MouseEvent<HTMLDivElement>) => {
@@ -31,7 +33,7 @@ export default class ScrollOver extends React.PureComponent<Props, null> {
   private handleMouseClick = (event:React.MouseEvent<HTMLDivElement>) => {
     const element = event.currentTarget;
     const direction = element.dataset.dir;
-    this.scrollTo(direction, 40);
+    this.scrollTo(direction, OFFSET);
   }
 
   render() {
@@ -43,13 +45,13 @@ export default class ScrollOver extends React.PureComponent<Props, null> {
           style={{maxHeight, width: `calc(${maxWidth} + 20px)`}}>
           {children}
         </div>
-        <div className={styles.top} 
+        <div className={styles.topbutton} 
           data-dir="down"
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
           onClick={this.handleMouseClick}
         />
-        <div className={styles.bottom} 
+        <div className={styles.bottombutton} 
           data-dir="up"
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}

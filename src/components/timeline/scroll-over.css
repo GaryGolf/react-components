@@ -12,7 +12,7 @@
   display: none;
 }
 
-.top {
+.topbutton {
   position: absolute;
   height: 40px;
   width: 100%;
@@ -21,7 +21,7 @@
   clip-path: polygon(25% 0%, 100% 0%, 100% 100%);
 }
 
-.bottom {
+.bottombutton {
   position: absolute;
   height: 40px;
   width: 100%;
