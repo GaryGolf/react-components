@@ -12,7 +12,6 @@ export default class ScrollOver extends React.PureComponent<Props, null> {
       <div className={styles.scrollover}>
         <div className={styles.scrollcontainer}>
           {this.props.children}
-          <div className={styles.middle} />
         </div>
         <div className={styles.top} />
         <div className={styles.bottom} />

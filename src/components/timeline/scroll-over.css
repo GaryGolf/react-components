@@ -1,8 +1,6 @@
 .scrollover {
   background: silver;
   position: relative;
-  /* height: 100%; */
-  /* overflow-y: auto; */
 }
 
 .scrollcontainer {
