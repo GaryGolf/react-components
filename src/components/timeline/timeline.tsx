@@ -126,6 +126,6 @@ export default class TimeLine extends React.Component<Props, State> {
     //   </div>
     // )
 
-    return <ScrollOver>{rows} </ScrollOver>
+    return <ScrollOver maxWidth="80px" maxHeight="200px">{rows} </ScrollOver>
   }
 }
