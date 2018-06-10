@@ -3,7 +3,14 @@ import * as styles from './timeline.css';
 import { currentId } from 'async_hooks';
 import ScrollOver from './scroll-over';
 
-interface Props {};
+type DateType = string | number | Date;
+
+interface Props {
+  today?: boolean;
+  tomorow?: boolean;
+  weekend?: boolean;
+  dates: Set<DateType> | Array<DateType>;
+};
 interface State {
   month: number;
 };
@@ -22,59 +29,59 @@ export default class TimeLine extends React.Component<Props, State> {
     }
   }
 
-  private handleScroll = (event:React.UIEvent<HTMLDivElement>) => {
-    const height = event.currentTarget.scrollHeight;
-    const top = event.currentTarget.scrollTop;
-    const client = event.currentTarget.clientHeight;
-    const { scrollHeight, scrollTop, clientHeight } = event.currentTarget; 
-    const scrollBottom = scrollHeight - clientHeight == scrollTop;
-    if (!scrollTop) {
-      console.log('top');
-      this.top = true;
-      return;
-    } else if (scrollBottom) {
-      console.log('bottom');
-      this.bot = true;
-      return;
-    } else {
-      this.bot = false;
-      this.top = false;
-    }
-  }
+  // private handleScroll = (event:React.UIEvent<HTMLDivElement>) => {
+  //   const height = event.currentTarget.scrollHeight;
+  //   const top = event.currentTarget.scrollTop;
+  //   const client = event.currentTarget.clientHeight;
+  //   const { scrollHeight, scrollTop, clientHeight } = event.currentTarget; 
+  //   const scrollBottom = scrollHeight - clientHeight == scrollTop;
+  //   if (!scrollTop) {
+  //     console.log('top');
+  //     this.top = true;
+  //     return;
+  //   } else if (scrollBottom) {
+  //     console.log('bottom');
+  //     this.bot = true;
+  //     return;
+  //   } else {
+  //     this.bot = false;
+  //     this.top = false;
+  //   }
+  // }
 
-  private handleWheel = (event:React.WheelEvent<HTMLDivElement>) => {
-    const delta = event.deltaY;
-    if(this.bot && delta > 8) {
-      this.bot = false;
-      this.setState(prevState => { 
-        let month = prevState.month + 1;
-        if (month == this.months.length) month = prevState.month;
-        return { month }
-      }, () => {
-        if (this.state.month < this.months.length - 1) this.container.scroll(0,0)
-        console.log('bottom', delta)
-      }
-    )
+  // private handleWheel = (event:React.WheelEvent<HTMLDivElement>) => {
+  //   const delta = event.deltaY;
+  //   if(this.bot && delta > 8) {
+  //     this.bot = false;
+  //     this.setState(prevState => { 
+  //       let month = prevState.month + 1;
+  //       if (month == this.months.length) month = prevState.month;
+  //       return { month }
+  //     }, () => {
+  //       if (this.state.month < this.months.length - 1) this.container.scroll(0,0)
+  //       console.log('bottom', delta)
+  //     }
+  //   )
      
-    } else if (this.top && delta < -8) {
-      this.setState(prevState => { 
-        let month = prevState.month - 1;
-        if (month < 0) month = prevState.month;
-        return { month }
-      })
-      const height = this.container.scrollHeight;
-      this.container.scroll(0,height)
-      this.top = false;
-      console.log('top', delta)
-    }
-  }
+  //   } else if (this.top && delta < -8) {
+  //     this.setState(prevState => { 
+  //       let month = prevState.month - 1;
+  //       if (month < 0) month = prevState.month;
+  //       return { month }
+  //     })
+  //     const height = this.container.scrollHeight;
+  //     this.container.scroll(0,height)
+  //     this.top = false;
+  //     console.log('top', delta)
+  //   }
+  // }
 
   private handleMonthClick = (event:React.MouseEvent<HTMLDivElement>) => {
     const month = parseInt(event.currentTarget.dataset.idx);
     this.setState({ month })
   }
 
-  private handleUpScroll = () => {
+  private handleUpClick = () => {
     const height = this.timeline.scrollHeight;
     const top = this.timeline.scrollTop;
     const client = this.timeline.clientHeight;
@@ -82,7 +89,7 @@ export default class TimeLine extends React.Component<Props, State> {
     this.timeline.scroll(0, top + 8);
   }
 
-  private handleDownScroll = () => {
+  private handleDownClick = () => {
     const top = this.timeline.scrollTop;
     this.timeline.scroll(0, top - 8);
   }
@@ -102,38 +109,19 @@ export default class TimeLine extends React.Component<Props, State> {
   ))
     const past = mmm.filter((m,i) => i <= this.state.month)
     const futr = mmm.filter((m,i) => i > this.state.month)
-    // return (
-    //   <div>
-    //     <button onClick={this.handleUpScroll}>up</button>
-    //     <div className={styles.frame}>
-    //       <div className={styles.timeline}
-    //         ref={el => this.timeline = el}>
-    //         <div>today</div>
-    //         <div>tomorrow</div>
-    //         <div>weekend</div>
-    //         {past}
-            
-    //           <div className={styles.container}
-    //             ref={el => this.container = el}
-    //             onWheel={this.handleWheel}
-    //             onScroll={this.handleScroll}>
-    //             {rows}
-    //           </div>
-    //         {futr}
-    //       </div>
-    //     </div>
-    //     <button onClick={this.handleDownScroll}>down</button>
-    //   </div>
-    // )
 
     return (
-      <ScrollOver maxWidth="100px" maxHeight="160px">
-        {past}
-        <ScrollOver maxWidth="100px" maxHeight="72px">
-          {rows}
+      <div>
+        <button onClick={this.handleUpClick}>up</button>
+        <ScrollOver maxWidth="100px" maxHeight="160px">
+          {past}
+          <ScrollOver maxWidth="100px" maxHeight="72px">
+            {rows}
+          </ScrollOver>
+          {futr}
         </ScrollOver>
-        {futr}
-      </ScrollOver>
+        <button onClick={this.handleDownClick}>down</button>
+      </div>
     )
   }
 }
