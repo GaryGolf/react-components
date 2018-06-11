@@ -29,52 +29,17 @@ export default class TimeLine extends React.Component<Props, State> {
     }
   }
 
-  // private handleScroll = (event:React.UIEvent<HTMLDivElement>) => {
-  //   const height = event.currentTarget.scrollHeight;
-  //   const top = event.currentTarget.scrollTop;
-  //   const client = event.currentTarget.clientHeight;
-  //   const { scrollHeight, scrollTop, clientHeight } = event.currentTarget; 
-  //   const scrollBottom = scrollHeight - clientHeight == scrollTop;
-  //   if (!scrollTop) {
-  //     console.log('top');
-  //     this.top = true;
-  //     return;
-  //   } else if (scrollBottom) {
-  //     console.log('bottom');
-  //     this.bot = true;
-  //     return;
-  //   } else {
-  //     this.bot = false;
-  //     this.top = false;
-  //   }
-  // }
+  private normalizeCalendar = () => {
+    /*
+      create tree
+        {
+          [year] : [ { month: number, days: [{ } }, ..]
+        }
+      then sort years months days
+      then concat 2 arrays month [']
+    */
+  }
 
-  // private handleWheel = (event:React.WheelEvent<HTMLDivElement>) => {
-  //   const delta = event.deltaY;
-  //   if(this.bot && delta > 8) {
-  //     this.bot = false;
-  //     this.setState(prevState => { 
-  //       let month = prevState.month + 1;
-  //       if (month == this.months.length) month = prevState.month;
-  //       return { month }
-  //     }, () => {
-  //       if (this.state.month < this.months.length - 1) this.container.scroll(0,0)
-  //       console.log('bottom', delta)
-  //     }
-  //   )
-     
-  //   } else if (this.top && delta < -8) {
-  //     this.setState(prevState => { 
-  //       let month = prevState.month - 1;
-  //       if (month < 0) month = prevState.month;
-  //       return { month }
-  //     })
-  //     const height = this.container.scrollHeight;
-  //     this.container.scroll(0,height)
-  //     this.top = false;
-  //     console.log('top', delta)
-  //   }
-  // }
 
   private handleMonthClick = (event:React.MouseEvent<HTMLDivElement>) => {
     const month = parseInt(event.currentTarget.dataset.idx);
