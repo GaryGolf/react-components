@@ -3,7 +3,10 @@ import * as styles from './timeline.css';
 import { currentId } from 'async_hooks';
 import ScrollOver from './scroll-over';
 
-type DateType = string | number | Date;
+import * as moment from 'moment'
+
+
+type DateType = string | number //| Date;
 
 interface Props {
   today?: boolean;
@@ -27,18 +30,21 @@ export default class TimeLine extends React.Component<Props, State> {
     this.state = {
       month: 0
     }
+
   }
 
-  private normalizeCalendar = () => {
-    /*
-      create tree
-        {
-          [year] : [ { month: number, days: [{ } }, ..]
-        }
-      then sort years months days
-      then concat 2 arrays month [']
-    */
+  sort(dates:(Array<Date | number>)):Array<moment.Moment> {
+    return [...dates].map(d =>  moment(d)).sort();
   }
+ 
+
+  // private prepareCalendar = () => {
+
+  //   const qq = [...this.props.dates].map((q:DateType) => new Date(q))
+  //   // const dates: Date[] = Array.from(this.props.dates, d => new Date(d)) 
+  //   //   .sort()
+  //   // return dates;
+  // }
 
 
   private handleMonthClick = (event:React.MouseEvent<HTMLDivElement>) => {
