@@ -30,6 +30,7 @@ export default class Demo extends React.Component<Props, State> {
         dates.add(new Date(2018, 4, 18))
         dates.add(new Date(2018, 4, 11))
         dates.add(new Date(2019, 0, 1))
+        dates.add('2020-12-25')
         dates.add(null)
 
         return (

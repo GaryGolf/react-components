@@ -41,17 +41,17 @@ export default class TimeLine extends React.Component<Props, State> {
       month: 0
     }
 
-    const dates = this.prepareCalendar([...props.dates])
+    const dates = this.prepareCalendar()
       .map(d => d.month + ' ' + d.days.map(q => q.date))
     console.log(dates)
 
   }
 
-  private prepareCalendar = (dates:Array<DateType>):MonthType[] => {
+  private prepareCalendar = ():MonthType[] => {
     const now = moment().unix();
     let curMonth:number = null;
     let curYear:number = null;
-    return dates
+    const dates = [...this.props.dates]
       .map(d => ({ m: moment(d).minutes(0).seconds(0).milliseconds(0), value: d}))
       .filter(d => d.m.isValid() && d.m.unix() > now)
       .sort((a, b) => a.m.unix() - b.m.unix())
@@ -62,7 +62,7 @@ export default class TimeLine extends React.Component<Props, State> {
         const value = d.value;
 
         if (curMonth != month || curYear != year) {
-          acc.push({ month: d.m.format('MMM'), days: [{ date, value }] })
+          acc.push({ month: d.m.format('MMMM'), days: [{ date, value }] })
         } else {
           acc.slice(-1).pop().days.push({ date, value })
         }
@@ -70,6 +70,8 @@ export default class TimeLine extends React.Component<Props, State> {
         curYear = year;
         return acc;
       },[])
+
+      return dates;
   }
 
   private handleMonthClick = (event:React.MouseEvent<HTMLDivElement>) => {
@@ -91,16 +93,17 @@ export default class TimeLine extends React.Component<Props, State> {
   }
 
   render() {
-    const month = this.months[this.state.month];
-    const rows = new Array(70)
-      .fill('')
-      .map((x, idx) => <div key={idx+month}>{`${idx + 1} ${month}`}</div>)
+    const dates = this.prepareCalendar();
 
-    const mmm = this.months.map((m, idx) => (
-      <div key={m+idx}
+    const month = dates[this.state.month].month;
+    const rows = dates[this.state.month].days
+      .map((d, idx) => <div key={idx+month}>&nbsp;{`${d.date} ${month}`}</div>)
+
+    const mmm = dates.map((m, idx) => (
+      <div key={m.month+idx}
         data-idx={idx}
-       onClick={this.handleMonthClick}>
-       {m}
+        onClick={this.handleMonthClick}>
+       {m.month}
       </div>
   ))
     const past = mmm.filter((m,i) => i <= this.state.month)
