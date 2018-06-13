@@ -31,20 +31,20 @@ export default class TimeLine extends React.Component<Props, State> {
       month: 0
     }
 
+    const dates = this.prepareCalendar([...props.dates])
+      .map(m => m.format('D MMM'))
+    console.log(dates)
+
   }
 
-  sort(dates:(Array<Date | number>)):Array<moment.Moment> {
-    return [...dates].map(d =>  moment(d)).sort();
+  private prepareCalendar = (dates:Array<DateType>):moment.Moment[] => {
+    const now = moment().unix();
+    return dates
+      .map(d => moment(d))
+      .filter(m => m.isValid() && m.unix() > now)
+      .map(m => m.minutes(0).seconds(0).milliseconds(0))
+      .sort((a, b) => a.unix() - b.unix());
   }
- 
-
-  // private prepareCalendar = () => {
-
-  //   const qq = [...this.props.dates].map((q:DateType) => new Date(q))
-  //   // const dates: Date[] = Array.from(this.props.dates, d => new Date(d)) 
-  //   //   .sort()
-  //   // return dates;
-  // }
 
 
   private handleMonthClick = (event:React.MouseEvent<HTMLDivElement>) => {

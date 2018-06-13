@@ -16,19 +16,21 @@ export default class Demo extends React.Component<Props, State> {
  
     render(){
         const dates = new Set()
-        dates.add(new Date(2018, 0, 6))
-        dates.add(new Date(2018, 0, 12))
-        dates.add(new Date(2018, 1, 19))
-        dates.add(new Date(2018, 1, 16))
-        dates.add(new Date(2018, 1, 17))
-        dates.add(new Date(2018, 1, 31))
-        dates.add(new Date(2018, 2, 11))
-        dates.add(new Date(2018, 2, 22))
-        dates.add(new Date(2018, 3, 12))
-        dates.add(new Date(2018, 4, 12))
-        dates.add(new Date(2018, 4, 21))
+        dates.add(new Date(2018, 11, 6))
+        dates.add(new Date(2018, 11, 12))
+        dates.add(new Date(2018, 10, 19))
+        dates.add(new Date(2018, 9, 16))
+        dates.add(new Date(2018, 9, 17))
+        dates.add(new Date(2018, 9, 31))
+        dates.add(new Date(2018, 8, 11))
+        dates.add(new Date(2018, 8, 22))
+        dates.add(new Date(2018, 7, 12))
+        dates.add(new Date(2018, 6, 12))
+        dates.add(new Date(2018, 5, 21))
         dates.add(new Date(2018, 4, 18))
         dates.add(new Date(2018, 4, 11))
+        dates.add(new Date(2019, 0, 1))
+        dates.add(null)
 
         return (
             <div style={{margin:'20px'}}>
