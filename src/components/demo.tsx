@@ -43,6 +43,7 @@ export default class Demo extends React.Component<Props, State> {
               </Paragraph> */}
               <Timeline 
                 dates={dates}
+                onChange={console.log}                
               />
             </div>
         )

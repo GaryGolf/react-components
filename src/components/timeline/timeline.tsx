@@ -23,6 +23,7 @@ interface Props {
   tomorow?: boolean;
   weekend?: boolean;
   dates: Set<DateType> | Array<DateType>;
+  onChange:(value:DateType) => void;
 };
 
 interface State {
@@ -75,42 +76,51 @@ export default class TimeLine extends React.Component<Props, State> {
 
   private handleMonthClick = (event:React.MouseEvent<HTMLDivElement>) => {
     const month = parseInt(event.currentTarget.dataset.idx);
-    this.setState({ month, date: 0 })
+    this.setState({ month, date: 0 }, this.handleChange);
   }
 
   private handleUpClick = () => {
-    this.setState(prevState => {
-      if (prevState.date == 0) {
-        if(prevState.month == 0) return prevState;
-        return { month: prevState.month - 1, date: 0 };
-      }
-      return { date: prevState.date - 1 }  
-    })
+    this.setState(({ date, month }) => (date == 0) ? 
+      { month: month - 1, date: 0 } : { date: date - 1},
+      this.handleChange
+    )
   }
 
   private handleDownClick = () => {
-    this.setState(prevState => {
-      if (prevState.date + 1 >= this.dates[prevState.month].days.length) {
-        if(prevState.month + 1 >= this.dates.length) return prevState;
-        return { month: prevState.month + 1, date: 0 };
-      }
-      return { date: prevState.date + 1 }  
-    })
+    this.setState(({ date, month }) =>  date + 1 >= this.dates[month].days.length ?
+        { month: month + 1, date: 0 } : { date: date +1 },
+      this.handleChange
+    );
+  }
+
+  private handleDateClick = (event:React.MouseEvent<HTMLDivElement>) => {
+    const idx = parseInt(event.currentTarget.dataset.idx);
+    this.setState({ date: idx }, this.handleChange)
+  }
+
+  private handleChange = () => {
+    const { month, date } = this.state;
+    const { value } = this.dates[month].days[date];
+    this.props.onChange(value)
   }
 
   render() {
+    const { month, date } = this.state;
     const dates = this.prepareCalendar();
 
-    const month = dates[this.state.month].month;
-    const rows = dates[this.state.month].days
+    const monthTitle = dates[month].month;
+    const rows = dates[month].days
       .map((d, idx) => {
         const style = [
           styles.dayitem,
           this.state.date == idx ? styles.__active : ''
         ].join(' ');
         return (
-          <div key={d.date+month} className={style}>
-            &nbsp;{`${d.date} ${month}`}
+          <div key={d.date+monthTitle} 
+            className={style} 
+            data-idx={idx}
+            onClick={this.handleDateClick}>
+            &nbsp;{`${d.date} ${monthTitle}`}
           </div>
         )
       })
@@ -122,12 +132,17 @@ export default class TimeLine extends React.Component<Props, State> {
        {m.month}
       </div>
   ))
-    const past = mmm.filter((m,i) => i <= this.state.month)
-    const futr = mmm.filter((m,i) => i > this.state.month)
+    const past = mmm.filter((m,i) => i <= month)
+    const futr = mmm.filter((m,i) => i > month)
+
+    const isBottom = this.dates.length - 1 ==  month &&
+      this.dates[month].days.length - 1 == date
 
     return (
       <div>
-        <button onClick={this.handleUpClick}>up</button>
+        <button onClick={this.handleUpClick} disabled={!month && !date}>
+          up
+        </button>
         <ScrollOver maxWidth="100px" maxHeight="160px">
           {past}
           <ScrollOver getContainerRef={el => this.container = el} maxWidth="100px" maxHeight="72px">
@@ -135,7 +150,9 @@ export default class TimeLine extends React.Component<Props, State> {
           </ScrollOver>
           {futr}
         </ScrollOver>
-        <button onClick={this.handleDownClick}>down</button>
+        <button onClick={this.handleDownClick} disabled={isBottom}>
+          down
+        </button>
       </div>
     )
   }
