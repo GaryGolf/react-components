@@ -6,7 +6,17 @@ import ScrollOver from './scroll-over';
 import * as moment from 'moment'
 
 
-type DateType = string | number //| Date;
+type DateType = string | number | Date;
+
+type DayType = {
+  date: number;
+  value: DateType;
+}
+
+type MonthType = {
+  month: string;
+  days: DayType[];
+}
 
 interface Props {
   today?: boolean;
@@ -32,20 +42,35 @@ export default class TimeLine extends React.Component<Props, State> {
     }
 
     const dates = this.prepareCalendar([...props.dates])
-      .map(m => m.format('D MMM'))
+      .map(d => d.month + ' ' + d.days.map(q => q.date))
     console.log(dates)
 
   }
 
-  private prepareCalendar = (dates:Array<DateType>):moment.Moment[] => {
+  private prepareCalendar = (dates:Array<DateType>):MonthType[] => {
     const now = moment().unix();
+    let curMonth:number = null;
+    let curYear:number = null;
     return dates
-      .map(d => moment(d))
-      .filter(m => m.isValid() && m.unix() > now)
-      .map(m => m.minutes(0).seconds(0).milliseconds(0))
-      .sort((a, b) => a.unix() - b.unix());
-  }
+      .map(d => ({ m: moment(d).minutes(0).seconds(0).milliseconds(0), value: d}))
+      .filter(d => d.m.isValid() && d.m.unix() > now)
+      .sort((a, b) => a.m.unix() - b.m.unix())
+      .reduce((acc, d) => {
+        const month = d.m.month();
+        const year = d.m.year();
+        const date = d.m.date();
+        const value = d.value;
 
+        if (curMonth != month || curYear != year) {
+          acc.push({ month: d.m.format('MMM'), days: [{ date, value }] })
+        } else {
+          acc.slice(-1).pop().days.push({ date, value })
+        }
+        curMonth = month;
+        curYear = year;
+        return acc;
+      },[])
+  }
 
   private handleMonthClick = (event:React.MouseEvent<HTMLDivElement>) => {
     const month = parseInt(event.currentTarget.dataset.idx);
