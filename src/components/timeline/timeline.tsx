@@ -1,10 +1,7 @@
 import * as React from 'react';
 import * as styles from './timeline.css';
-import { currentId } from 'async_hooks';
 import ScrollOver from './scroll-over';
-
 import * as moment from 'moment'
-
 
 type DateType = string | number | Date;
 
