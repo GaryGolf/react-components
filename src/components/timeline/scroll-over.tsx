@@ -5,6 +5,7 @@ interface Props {
   children?: JSX.Element | JSX.Element[] | any;
   maxWidth?: string;
   maxHeight?: string;
+  getContainerRef?:(container:HTMLDivElement) => any;
 };
 
 const TIMEOUT = 20;
@@ -12,6 +13,10 @@ const TIMEOUT = 20;
 export default class ScrollOver extends React.PureComponent<Props, null> {
   private scrollContainer: HTMLDivElement;
   private scrollInterval;
+
+  public componentDidUpdate() {
+    this.props.getContainerRef && this.props.getContainerRef(this.scrollContainer);
+  }
 
   private scrollTo = (direction, offset = 2) => {
     const top = this.scrollContainer.scrollTop;
@@ -38,6 +43,7 @@ export default class ScrollOver extends React.PureComponent<Props, null> {
 
   render() {
     const { maxWidth, maxHeight, children } = this.props;
+    const hideControls = React.Children.count(children) <= 3;
     return (
       <div className={styles.scrollover} style={{maxWidth}}>
         <div className={styles.scrollcontainer} 
@@ -46,6 +52,7 @@ export default class ScrollOver extends React.PureComponent<Props, null> {
           {children}
         </div>
         <div className={styles.topbutton} 
+          hidden={hideControls}
           data-dir="down"
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
@@ -53,6 +60,7 @@ export default class ScrollOver extends React.PureComponent<Props, null> {
         />
         <div className={styles.bottombutton} 
           data-dir="up"
+          hidden={hideControls}
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
           onClick={this.handleMouseClick}
