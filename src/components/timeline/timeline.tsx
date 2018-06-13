@@ -33,8 +33,6 @@ interface State {
 
 export default class TimeLine extends React.Component<Props, State> {
   private container: HTMLDivElement;
-  private timeline: HTMLDivElement;
-
   private dates:MonthType[] 
 
   public constructor(props:Props) {
@@ -43,15 +41,18 @@ export default class TimeLine extends React.Component<Props, State> {
       month: 0,
       date: 0
     }
-
-    this.dates = this.prepareCalendar();
+    this.dates = this.prepareCalendar(props.dates);
   }
 
-  private prepareCalendar = ():MonthType[] => {
+  public componentWillReceiveProps(nextProps) {
+    this.dates = this.prepareCalendar(nextProps.dates);
+  }
+
+  private prepareCalendar = (props:Set<DateType> | Array<DateType>):MonthType[] => {
     const now = moment().unix();
     let curMonth:number = null;
     let curYear:number = null;
-    const dates = [...this.props.dates]
+    const dates = [...props]
       .map(d => ({ m: moment(d).minutes(0).seconds(0).milliseconds(0), value: d}))
       .filter(d => d.m.isValid() && d.m.unix() > now)
       .sort((a, b) => a.m.unix() - b.m.unix())
@@ -106,10 +107,8 @@ export default class TimeLine extends React.Component<Props, State> {
 
   render() {
     const { month, date } = this.state;
-    const dates = this.prepareCalendar();
-
-    const monthTitle = dates[month].month;
-    const rows = dates[month].days
+    const monthTitle = this.dates[month].month;
+    const rows = this.dates[month].days
       .map((d, idx) => {
         const style = [
           styles.dayitem,
@@ -125,7 +124,7 @@ export default class TimeLine extends React.Component<Props, State> {
         )
       })
 
-    const mmm = dates.map((m, idx) => (
+    const mmm = this.dates.map((m, idx) => (
       <div key={m.month+idx}
         data-idx={idx}
         onClick={this.handleMonthClick}>
