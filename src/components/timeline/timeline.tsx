@@ -69,8 +69,13 @@ export default class TimeLine extends React.Component<Props, State> {
         curYear = year;
         return acc;
       },[])
+      const today = moment().format('D MMMM');
+      const weekend = moment().day('Saturday').hours(6).minutes(0).seconds(0).toDate();
+      const tomorrow = moment().add(1, 'days').hours(6).minutes(0).seconds(0).toDate();
 
-      dates.unshift({ month: 'today', value: new Date() })
+      dates.unshift({ month: 'Weekend', value: weekend })
+      dates.unshift({ month: 'Tomorrow', value: tomorrow })
+      dates.unshift({ month: today, value: new Date() })
       return dates;
   }
 
@@ -126,7 +131,7 @@ export default class TimeLine extends React.Component<Props, State> {
     const mmm = this.dates.map((m, idx) => {
 
       const style = [
-        !!m.value && month == idx ? styles.__active : ''
+        styles.monthitem, !!m.value && month == idx ? styles.__active : ''
       ].join(' ');
 
       return (

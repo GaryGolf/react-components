@@ -32,6 +32,10 @@ div[data-idx] {
   scroll-snap-coordinate: 0 0;
 }
 
+.monthitem {
+  font-weight: 600;
+}
+
 .__active {
   color: cyan;
 }
