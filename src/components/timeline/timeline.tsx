@@ -87,7 +87,7 @@ export default class TimeLine extends React.Component<Props, State> {
   }
 
   private handleDownClick = () => {
-    this.setState(({ date, month }) =>  date + 1 >= this.dates[month].days.length ?
+    this.setState(({ date, month }) =>  date + 1 >= (!this.dates[month].days ? 0 : this.dates[month].days.length) ?
         { month: month + 1, date: 0 } : { date: date +1 },
       this.handleChange
     );
