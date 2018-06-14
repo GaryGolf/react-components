@@ -12,7 +12,8 @@ type DayType = {
 
 type MonthType = {
   month: string;
-  days: DayType[];
+  days?: DayType[];
+  value?: DateType;
 }
 
 interface Props {
@@ -69,6 +70,7 @@ export default class TimeLine extends React.Component<Props, State> {
         return acc;
       },[])
 
+      dates.unshift({ month: 'today', value: new Date() })
       return dates;
   }
 
@@ -98,18 +100,18 @@ export default class TimeLine extends React.Component<Props, State> {
 
   private handleChange = () => {
     const { month, date } = this.state;
-    const { value } = this.dates[month].days[date];
+    const { value } = !this.dates[month].days ? this.dates[month] : this.dates[month].days[date];
     this.props.onChange(value)
   }
 
   render() {
     const { month, date } = this.state;
     const monthTitle = this.dates[month].month;
-    const rows = this.dates[month].days
+    const rows = !this.dates[month].days ? null : this.dates[month].days
       .map((d, idx) => {
         const style = [
           styles.dayitem,
-          this.state.date == idx ? styles.__active : ''
+          date == idx ? styles.__active : ''
         ].join(' ');
         return (
           <div key={d.date+monthTitle} 
@@ -121,13 +123,22 @@ export default class TimeLine extends React.Component<Props, State> {
         )
       })
 
-    const mmm = this.dates.map((m, idx) => (
-      <div key={m.month+idx}
-        data-idx={idx}
-        onClick={this.handleMonthClick}>
-       {m.month}
-      </div>
-  ))
+    const mmm = this.dates.map((m, idx) => {
+
+      const style = [
+        !!m.value && month == idx ? styles.__active : ''
+      ].join(' ');
+
+      return (
+        <div key={m.month+idx}
+          className={style}
+          data-idx={idx}
+          onClick={this.handleMonthClick}>
+         {m.month}
+        </div>
+      )
+    })
+
     const past = mmm.filter((m,i) => i <= month)
     const futr = mmm.filter((m,i) => i > month)
 
