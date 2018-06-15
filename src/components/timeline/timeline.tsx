@@ -204,7 +204,7 @@ export default class TimeLine extends React.Component<Props, State> {
     const currOption = this.dates[month].value;
     return Array.isArray(currOption) ? currOption.length : 0;
   }
-  private isUp = ():boolean => {
+  private isTop = ():boolean => {
     const { date, month } = this.state;
     return !date && !month;
   }
@@ -257,7 +257,7 @@ export default class TimeLine extends React.Component<Props, State> {
 
     return (
       <div>
-        <button onClick={this.handleUpClick} disabled={this.isUp()}>
+        <button onClick={this.handleUpClick} disabled={this.isTop()}>
           up
         </button>
         <ScrollOver maxWidth="100px" maxHeight="160px">
