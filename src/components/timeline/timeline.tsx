@@ -229,7 +229,7 @@ export default class TimeLine extends React.Component<Props, State> {
           <div key={d.unix()} 
             className={style} 
             data-idx={idx}
-            ref={active && (el => el && el.scrollIntoView())}
+            ref={active && (el => el && el.scrollIntoView(!this.dir))}
             onClick={this.handleDateClick}>
             &nbsp;{d.format('D MMMM')}
           </div>
@@ -237,15 +237,13 @@ export default class TimeLine extends React.Component<Props, State> {
       });
 
     const monthList = this.dates.map((m, idx) => {
-
       const active = !Array.isArray(m.value) && month == idx;
       const style = [styles.monthitem, active ? styles.__active : ''].join(' ');
-
       return (
         <div key={m.label+idx}
           className={style}
           data-idx={idx}
-          ref={active && (el => el && el.scrollIntoView(this.dir))}
+          ref={active && (el => el && el.scrollIntoView())}
           onClick={this.handleMonthClick}>
          {m.label}
         </div>
