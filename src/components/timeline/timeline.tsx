@@ -39,7 +39,6 @@ interface State {
 };
 
 export default class TimeLine extends React.Component<Props, State> {
-  private scroll: HTMLDivElement;
   private dates:Option[];
   private type:string;
   private dir: boolean;
@@ -50,44 +49,21 @@ export default class TimeLine extends React.Component<Props, State> {
       month: 0,
       date: 0
     }
-    // this.dates = this.prepareCalendar(props);
     this.dir = true;
-    this.dates = this.prepareTimeLine([...props.dates]);
-
+    this.setUpTimeLine(props);
   }
 
-  public componentWillReceiveProps(nextProps) {
-    this.dates = this.prepareTimeLine([...nextProps.dates]);
+  public componentWillReceiveProps(nextProps:Props) {
+    this.setUpTimeLine(nextProps)
   }
 
 
-  private prepareCalendar = (props:Props):MonthType[] => {
-    if (!props.dates) return null;
-    const now = moment().unix();
-    let curMonth:number = null;
-    let curYear:number = null;
-    
-    const dates = [...new Set(props.dates)]
-      .map(d => ({ m: moment(d).minutes(0).seconds(0).milliseconds(0), value: d}))
-      .filter(d => d.m.isValid() && d.m.unix() > now)
-      .sort((a, b) => a.m.unix() - b.m.unix())
-      .reduce((acc, d) => {
-        const month = d.m.month();
-        const year = d.m.year();
-        const date = d.m.date();
-        const value = d.value;
-
-        if (curMonth != month || curYear != year) {
-          acc.push({ month: d.m.format('MMMM'), days: [{ date, value }] })
-        } else {
-          acc.slice(-1).pop().days.push({ date, value })
-        }
-        curMonth = month;
-        curYear = year;
-        return acc;
-      },[])
-      
-    return dates;
+  private setUpTimeLine = (props:Props) => {
+    const dates = [... new Set(props.dates)];
+    this.type = props.type || this.getInputType(dates.shift());
+    const weekend = this.setUpWeekend(props);
+    const timeline = this.prepareTimeLine(dates);
+    this.dates = weekend.concat(timeline);
   }
 
   private prepareTimeLine = (dates:Array<DateType>):Option[] => {
@@ -130,34 +106,32 @@ export default class TimeLine extends React.Component<Props, State> {
     }
   }
 
-  private format = (value:DateType):DateType => {
-    const m = moment(value);
+  private format = (value:Moment):DateType => {
     switch(this.type) {
-      case 'string' : return m.format();
-      case 'number' : return m.unix();
-      case 'Date' : return m.toDate();
-      default : return m;
+      case 'string' : return value.format();
+      case 'number' : return value.unix();
+      case 'Date' : return value.toDate();
+      default : return value;
     }
   }
 
-  private setUpWeekend(props:Props):MonthType[] {
+  private setUpWeekend(props:Props):Option[] {
       
-    const dates:MonthType[] = [];
-    this.type = props.type || this.getInputType([...props.dates].shift());
+    const dates:Option[] = [];
 
     if (props.today) dates.push({ 
-      month: moment().format('D MMMM'), 
-      value: this.format(new Date()) 
+      label: moment().format('D MMMM'), 
+      value: moment()
     });
 
     if (props.tomorrow) dates.push({ 
-      month: 'Tomorrow', 
-      value: this.format(moment(new Date()).add(1, 'days').hours(6).minutes(0).seconds(0))
+      label: 'Tomorrow', 
+      value: moment(new Date()).add(1, 'days').hours(6).minutes(0).seconds(0)
     });
 
     if (props.weekend) dates.push({ 
-      month: 'Weekend', 
-      value: this.format(moment().day('Saturday').hours(6).minutes(0).seconds(0)) 
+      label: 'Weekend', 
+      value: moment().day('Saturday').hours(6).minutes(0).seconds(0)
     });
 
     return dates;
@@ -176,7 +150,7 @@ export default class TimeLine extends React.Component<Props, State> {
         date: this.isWeekend(month - 1) ? 0 : this.countDays(month - 1) - 1 
       };
       return { date: date - 1 }
-    });
+    }, this.handleChange);
   }
 
   private handleDownClick = () => {
@@ -184,7 +158,7 @@ export default class TimeLine extends React.Component<Props, State> {
     this.setState(({ date, month }) => {
       if (this.isWeekend(month) || date == this.countDays(month) - 1) return { month: month + 1, date : 0 };
       return { date: date + 1 };
-    })
+    }, this.handleChange)
   }
 
   private handleDateClick = (event:React.MouseEvent<HTMLDivElement>) => {
