@@ -40,7 +40,7 @@ interface State {
 
 export default class TimeLine extends React.Component<Props, State> {
   private scroll: HTMLDivElement;
-  private dates:MonthType[];
+  private dates:Option[];
   private type:string;
 
   public constructor(props:Props) {
@@ -49,14 +49,14 @@ export default class TimeLine extends React.Component<Props, State> {
       month: 0,
       date: 0
     }
-    this.dates = this.prepareCalendar(props);
+    // this.dates = this.prepareCalendar(props);
 
-    console.log(this.prepareTimeLine([...props.dates]))
+    this.dates = this.prepareTimeLine([...props.dates]);
 
   }
 
   public componentWillReceiveProps(nextProps) {
-    this.dates = this.prepareCalendar(nextProps.dates);
+    this.dates = this.prepareTimeLine([...nextProps.dates]);
   }
 
 
@@ -168,17 +168,20 @@ export default class TimeLine extends React.Component<Props, State> {
   }
 
   private handleUpClick = () => {
-    this.setState(({ date, month }) => (date == 0) ? 
-      { month: month - 1, date: 0 } : { date: date - 1},
-      this.handleChange
-    )
+    this.setState(({ date, month }) => {
+      if (this.isWeekend(month) || date == 0) return { 
+        month: month - 1, 
+        date: this.isWeekend(month - 1) ? 0 : this.countDays(month - 1) - 1 
+      };
+      return { date: date - 1 }
+    });
   }
 
   private handleDownClick = () => {
-    this.setState(({ date, month }) =>  date + 1 >= (!this.dates[month].days ? 0 : this.dates[month].days.length) ?
-        { month: month + 1, date: 0 } : { date: date +1 },
-      this.handleChange
-    );
+    this.setState(({ date, month }) => {
+      if (this.isWeekend(month) || date == this.countDays(month) - 1) return { month: month + 1, date : 0 };
+      return { date: date + 1 };
+    })
   }
 
   private handleDateClick = (event:React.MouseEvent<HTMLDivElement>) => {
@@ -188,43 +191,49 @@ export default class TimeLine extends React.Component<Props, State> {
 
   private handleChange = () => {
     const { month, date } = this.state;
-    const weekend = !this.dates[month].days;
-    const { value } = weekend ? this.dates[month] : this.dates[month].days[date];
-    !!this.scroll && this.scroll.scrollIntoView();
+    const weekend = this.isWeekend(month)
+    const value = weekend ? this.dates[month].value : this.dates[month].value[date];
     this.props.onChange(this.format(value));
+  }
+
+  private isWeekend = (month):boolean => !Array.isArray(this.dates[month].value);
+  private countDays = (month:number):number => {
+    const currOption = this.dates[month].value;
+    return Array.isArray(currOption) ? currOption.length : 0;
   }
 
   render() {
     if (!this.dates || !this.dates.length) return null;
     const { month, date } = this.state;
-    const monthTitle = this.dates[month].month;
-    const rows = !this.dates[month].days ? null : this.dates[month].days
+    const currOption = this.dates[month].value;
+
+    const datesList = !Array.isArray(currOption) || !currOption.length ? null : currOption
       .map((d, idx) => {
         const active = date == idx;
         const style = [styles.dayitem, active ? styles.__active : ''].join(' ');
         return (
-          <div key={d.date+monthTitle} 
+          <div key={d.unix()} 
             className={style} 
             data-idx={idx}
-            ref={active && (el => this.scroll = el)}
+            ref={active && (el => el && el.scrollIntoView())}
             onClick={this.handleDateClick}>
-            &nbsp;{`${d.date} ${monthTitle}`}
+            &nbsp;{d.format('D MMMM')}
           </div>
         ) 
-      })
+      });
 
     const monthList = this.dates.map((m, idx) => {
 
-      const active = !!m.value && month == idx;
+      const active = !Array.isArray(m.value) && month == idx;
       const style = [styles.monthitem, active ? styles.__active : ''].join(' ');
 
       return (
-        <div key={m.month+idx}
+        <div key={m.label+idx}
           className={style}
           data-idx={idx}
-          ref={active && (el => this.scroll = el)}
+          ref={active && (el => el && el.scrollIntoView())}
           onClick={this.handleMonthClick}>
-         {m.month}
+         {m.label}
         </div>
       ) 
     })
@@ -233,7 +242,7 @@ export default class TimeLine extends React.Component<Props, State> {
     const future = monthList.filter((m,i) => i > month)
 
 
-    const length = !this.dates[month].days ? 1 : this.dates[month].days.length;
+    const length = Array.isArray(currOption) ? currOption.length : 1
     const isUp = !month && !date;
     const isBottom = this.dates.length - 1 ==  month && length - 1 == month;
 
@@ -245,7 +254,7 @@ export default class TimeLine extends React.Component<Props, State> {
         <ScrollOver maxWidth="100px" maxHeight="160px">
           {past}
           <ScrollOver maxWidth="100px" maxHeight="72px">
-            {rows}
+            {datesList}
           </ScrollOver>
           {future}
         </ScrollOver>
