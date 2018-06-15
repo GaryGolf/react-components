@@ -3,6 +3,7 @@ import * as React from 'react'
 // import Paragraph from './paragraph/paragraph'
 // import Input from './input'
 import Timeline from './timeline';
+import * as moment from 'moment'
 
 interface Props {}
 interface State {}
@@ -15,7 +16,11 @@ export default class Demo extends React.Component<Props, State> {
     }
  
     render(){
+        
         const dates = new Set()
+        // dates.add(1318874398)
+        // dates.add('2020-12-25')
+        // dates.add(moment().add(2,'days'))
         dates.add(new Date(2018, 11, 6))
         dates.add(new Date(2018, 11, 12))
         dates.add(new Date(2018, 10, 19))
@@ -43,7 +48,9 @@ export default class Demo extends React.Component<Props, State> {
               </Paragraph> */}
               <Timeline 
                 dates={dates}
-                onChange={console.log}                
+                onChange={console.log}      
+                type="Date"
+                today tomorrow weekend          
               />
             </div>
         )
