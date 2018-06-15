@@ -42,6 +42,7 @@ export default class TimeLine extends React.Component<Props, State> {
   private scroll: HTMLDivElement;
   private dates:Option[];
   private type:string;
+  private dir: boolean;
 
   public constructor(props:Props) {
     super(props);
@@ -50,7 +51,7 @@ export default class TimeLine extends React.Component<Props, State> {
       date: 0
     }
     // this.dates = this.prepareCalendar(props);
-
+    this.dir = true;
     this.dates = this.prepareTimeLine([...props.dates]);
 
   }
@@ -168,6 +169,7 @@ export default class TimeLine extends React.Component<Props, State> {
   }
 
   private handleUpClick = () => {
+    this.dir = true;
     this.setState(({ date, month }) => {
       if (this.isWeekend(month) || date == 0) return { 
         month: month - 1, 
@@ -178,6 +180,7 @@ export default class TimeLine extends React.Component<Props, State> {
   }
 
   private handleDownClick = () => {
+    this.dir = false;
     this.setState(({ date, month }) => {
       if (this.isWeekend(month) || date == this.countDays(month) - 1) return { month: month + 1, date : 0 };
       return { date: date + 1 };
@@ -200,6 +203,17 @@ export default class TimeLine extends React.Component<Props, State> {
   private countDays = (month:number):number => {
     const currOption = this.dates[month].value;
     return Array.isArray(currOption) ? currOption.length : 0;
+  }
+  private isUp = ():boolean => {
+    const { date, month } = this.state;
+    return !date && !month;
+  }
+  private isBottom = ():boolean => {
+    const { date, month } = this.state;
+    if (month < this.dates.length - 1) return false;
+    else if (this.isWeekend(month)) return true;
+    else if (date == this.countDays(month) - 1) return true;
+    return false;
   }
 
   render() {
@@ -231,7 +245,7 @@ export default class TimeLine extends React.Component<Props, State> {
         <div key={m.label+idx}
           className={style}
           data-idx={idx}
-          ref={active && (el => el && el.scrollIntoView())}
+          ref={active && (el => el && el.scrollIntoView(this.dir))}
           onClick={this.handleMonthClick}>
          {m.label}
         </div>
@@ -241,14 +255,9 @@ export default class TimeLine extends React.Component<Props, State> {
     const past = monthList.filter((m,i) => i <= month)
     const future = monthList.filter((m,i) => i > month)
 
-
-    const length = Array.isArray(currOption) ? currOption.length : 1
-    const isUp = !month && !date;
-    const isBottom = this.dates.length - 1 ==  month && length - 1 == month;
-
     return (
       <div>
-        <button onClick={this.handleUpClick} disabled={isUp}>
+        <button onClick={this.handleUpClick} disabled={this.isUp()}>
           up
         </button>
         <ScrollOver maxWidth="100px" maxHeight="160px">
@@ -258,7 +267,7 @@ export default class TimeLine extends React.Component<Props, State> {
           </ScrollOver>
           {future}
         </ScrollOver>
-        <button onClick={this.handleDownClick} disabled={isBottom}>
+        <button onClick={this.handleDownClick} disabled={this.isBottom()}>
           down
         </button>
       </div>
