@@ -217,7 +217,7 @@ export default class TimeLine extends React.Component<Props, State> {
         <div key={m.label+idx}
           className={style}
           data-idx={idx}
-          ref={active && (el => el && el.scrollIntoView())}
+          ref={active && (el => el && el.scrollIntoView(false))}
           onClick={this.handleMonthClick}>
          {m.label}
         </div>
