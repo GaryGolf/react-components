@@ -57,7 +57,6 @@ export default class TimeLine extends React.Component<Props, State> {
     this.setUpTimeLine(nextProps)
   }
 
-
   private setUpTimeLine = (props:Props) => {
     const dates = [... new Set(props.dates)];
     this.type = props.type || this.getInputType(dates.shift());
@@ -72,6 +71,8 @@ export default class TimeLine extends React.Component<Props, State> {
     const now = moment().unix();
     let curMonth:number = null;
     let curYear:number = null;
+
+// should remove Set
 
     return [... new Set(dates)]
       .map(d => moment(d).minutes(0).seconds(0).milliseconds(0))
