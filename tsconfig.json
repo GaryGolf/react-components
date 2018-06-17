@@ -21,6 +21,7 @@
     ]
   },
   "exclude": [
+    "esnext",
     "dist",
     "build",
     "node_modules"
