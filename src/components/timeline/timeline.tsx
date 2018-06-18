@@ -48,7 +48,7 @@ export default class TimeLine extends React.Component<Props, State> {
 
   private setUpTimeLine = (props:Props) => {
     const dates = [... new Set(props.dates)];
-    this.type = props.type || 'Moment' //this.getInputType(dates.shift());
+    this.type = props.type || !props.dates ? 'Date' : this.getInputType(dates.shift());
     const weekend = this.setUpWeekend(props);
     const timeline = !props.dates ? this.prepareCalendar() :this.prepareTimeLine(dates);
     this.dates = weekend.concat(timeline);
@@ -57,12 +57,11 @@ export default class TimeLine extends React.Component<Props, State> {
   private prepareCalendar = ():Option[] => {
     let curMonth:number = null;
     let curYear:number = null;
-
     return new Array(180)
       .fill(null)
       .map((v,i) => i)
       .reduce((acc, i) => {
-        const d = moment().add(i, 'days');
+        const d = moment().add(i, 'days').hours(0).minutes(0).seconds(0).milliseconds(0);
         const month = d.month();
         const year = d.year();
         const label = d.format('MMMM');
