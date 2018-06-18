@@ -18,7 +18,7 @@ interface Props {
   tomorrow?: boolean;
   weekend?: boolean;
   type?: 'string' | 'number' | 'Date' | 'Moment';
-  dates: Set<DateType> | Array<DateType>;
+  dates?: Set<DateType> | Array<DateType>;
   onChange:(value:DateType) => void;
 };
 
@@ -48,10 +48,35 @@ export default class TimeLine extends React.Component<Props, State> {
 
   private setUpTimeLine = (props:Props) => {
     const dates = [... new Set(props.dates)];
-    this.type = props.type || this.getInputType(dates.shift());
+    this.type = props.type || 'Moment' //this.getInputType(dates.shift());
     const weekend = this.setUpWeekend(props);
-    const timeline = this.prepareTimeLine(dates);
+    const timeline = !props.dates ? this.prepareCalendar() :this.prepareTimeLine(dates);
     this.dates = weekend.concat(timeline);
+  }
+
+  private prepareCalendar = ():Option[] => {
+    let curMonth:number = null;
+    let curYear:number = null;
+
+    return new Array(180)
+      .fill(null)
+      .map((v,i) => i)
+      .reduce((acc, i) => {
+        const d = moment().add(i, 'days');
+        const month = d.month();
+        const year = d.year();
+        const label = d.format('MMMM');
+
+        if (curMonth != month || curYear != year) {
+          acc.push({ label, value: [d] })
+        } else {
+          const { value } = acc.slice(-1).pop();
+          if(Array.isArray(value)) value.push(d)
+        }
+        curMonth = month;
+        curYear = year;
+        return acc;
+      },[])
   }
 
   private prepareTimeLine = (dates:Array<DateType>):Option[] => {
