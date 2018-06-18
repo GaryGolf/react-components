@@ -54,10 +54,10 @@ export default class TimeLine extends React.Component<Props, State> {
     this.dates = weekend.concat(timeline);
   }
 
-  private prepareCalendar = ():Option[] => {
+  private prepareCalendar = (days = 180):Option[] => {
     let curMonth:number = null;
     let curYear:number = null;
-    return new Array(180)
+    return new Array(days)
       .fill(null)
       .map((v,i) => i)
       .reduce((acc, i) => {
