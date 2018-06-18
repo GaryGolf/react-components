@@ -6,17 +6,6 @@ import * as moment from 'moment';
 type Moment = moment.Moment;
 type DateType = string | number | Date | moment.Moment;
 
-type DayType = {
-  date: number;
-  value: DateType;
-}
-
-type MonthType = {
-  month: string;
-  days?: DayType[];
-  value?: DateType;
-}
-
 interface Option {
   label: string;
   value: Moment | Moment[];

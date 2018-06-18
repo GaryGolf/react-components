@@ -47,7 +47,7 @@ export default class Demo extends React.Component<Props, State> {
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia dolorum cumque accusantium perspiciatis, minima sequi deleniti qui vel minus magni, vitae officiis, aspernatur. Accusantium blanditiis adipisci provident, vitae minus voluptatem id eaque quam error assumenda molestiae deleniti, placeat. Sit temporibus labore delectus blanditiis ullam, consectetur sint nam vitae at eos!
               </Paragraph> */}
               <Timeline 
-                dates={dates}
+                // dates={dates}
                 onChange={console.log}      
                 type="Date"
                 today tomorrow weekend          
