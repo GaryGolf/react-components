@@ -19,6 +19,8 @@ interface Props {
   weekend?: boolean;
   type?: 'string' | 'number' | 'Date' | 'Moment';
   dates?: Set<DateType> | Array<DateType>;
+  days?: number;
+  defaultValue?: DateType
   onChange:(value:DateType) => void;
 };
 
@@ -31,33 +33,48 @@ export default class TimeLine extends React.Component<Props, State> {
   private dates:Option[];
   private type:string;
   private dir: boolean;
+  static defaultProps = { days: 120 };
 
   public constructor(props:Props) {
     super(props);
-    this.state = {
-      month: 0,
-      date: 0
-    }
     this.dir = true;
     this.setUpTimeLine(props);
+    this.state = this.getActiveDate(props)
   }
 
   public componentWillReceiveProps(nextProps:Props) {
     this.setUpTimeLine(nextProps)
+    this.setState(this.getActiveDate(nextProps));
   }
 
   private setUpTimeLine = (props:Props) => {
     const dates = [... new Set(props.dates)];
     this.type = props.type || !props.dates ? 'Date' : this.getInputType(dates.shift());
     const weekend = this.setUpWeekend(props);
-    const timeline = !props.dates ? this.prepareCalendar() :this.prepareTimeLine(dates);
+    const timeline = !props.dates ? this.prepareCalendar(props) :this.prepareTimeLine(dates);
     this.dates = weekend.concat(timeline);
   }
 
-  private prepareCalendar = (days = 180):Option[] => {
+  private getActiveDate = (props:Props):{month:number, date:number} => {
+    const defaultDate = !props.defaultValue ? null : moment(props.defaultValue)
+    if (!defaultDate || !defaultDate.isValid()) return { month: 0, date: 0 };
+    for(let i = 0; i < this.dates.length;i++) {
+      const curValue = this.dates[i].value;
+      if (Array.isArray(curValue)) {
+        for(let j = 0; j < curValue.length; j++) {
+          if (curValue[j].isSame(defaultDate, 'day')) return { month: i, date: j}
+        }
+      }
+    }
+    return { month: 0, date: 0 };
+  }
+
+  private prepareCalendar = (props:Props):Option[] => {
+
     let curMonth:number = null;
     let curYear:number = null;
-    return new Array(days)
+
+    return new Array(props.days)
       .fill(null)
       .map((v,i) => i)
       .reduce((acc, i) => {

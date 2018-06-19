@@ -50,6 +50,7 @@ export default class Demo extends React.Component<Props, State> {
                 // dates={dates}
                 onChange={console.log}      
                 type="Date"
+                defaultValue = {'2018-1-23'}
                 today tomorrow weekend          
               />
             </div>
