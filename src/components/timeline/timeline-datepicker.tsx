@@ -21,6 +21,10 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
     type: 'Date'
   }
 
+  private handleMonthClick = (date: string) => {
+    this.props.onChange(date);
+  }
+
   private renderMonth = () => {
     const { after, before, value } = this.props;
     const months =  new Array(moment(before).diff(moment(after), 'months'))
@@ -28,12 +32,27 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
       .map((x, i) => moment().hours(0).minutes(0).seconds(0).milliseconds(0).add(i, 'month'))
 
     const past = months
-      .filter(m => m.isSameOrBefore(moment(value)))
-      .map(m => <li key={m.format('MMMM YYYY')}>{m.format('MMMM')}</li>)
+      .filter(m => m.isSameOrBefore(moment(value).startOf('month')))
+      .map(m => (
+        <MonthItem 
+          key={m.format('MMMM YYYY')}
+          date={m} 
+          data-date={m.toISOString()}
+          onClick={this.handleMonthClick}
+          active={moment(value).isSame(m, 'month')}
+        />
+      ))
     
     const futr = months
-      .filter(m => m.isAfter(moment(value)))
-      .map(m => <li key={m.format('MMMM YYYY')}>{m.format('MMMM')}</li>)
+      .filter(m => m.isAfter(moment(value).startOf('month')))
+      .map(m => (
+        <MonthItem 
+          key={m.format('MMMM YYYY')}
+          date={m} 
+          onClick={this.handleMonthClick}
+          active={moment(value).isSame(m, 'month')}
+        />
+      ))
 
     const specialDays = [
       <li key="today">{moment().format('DD MMMM')}</li>,
@@ -43,6 +62,7 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
     return [ specialDays.concat(past), futr];
   }
 
+
   private renderDays = () => {
     const { value } = this.props;
     if (!value || !moment(value).isValid()) return null;
@@ -51,14 +71,20 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
       .fill(null)
       .map((x, i) => moment(value).startOf('month').add(i, 'days'))
       .filter(m => m.isAfter(now))
-      .map(m => <li key={m.format('DD-MM')}>{m.format('DD MMMM')}</li>);
+      .map(m => (
+        <DayItem
+          key={m.format('DD MMMM')}
+          date={m}
+          onClick={this.handleMonthClick}
+          active={moment(value).isSame(m, 'day')}
+        />
+      ));
     return <ul>{days}</ul>
   }
   render() {
 
     const days = this.renderDays();
     const [past, futr] = this.renderMonth();
-    console.log(this.renderDays())
     return (
       <div>
         <ul>
@@ -69,4 +95,50 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
       </div>
     )
   }
+}
+
+interface MonthItemProps {
+  date: Moment;
+  onClick: (date:string) => void;
+  active: boolean;
+}
+
+const MonthItem:React.SFC<MonthItemProps> = props => {
+
+  const handleClick = (event:React.MouseEvent<HTMLLIElement>) => {
+    const { date } = event.currentTarget.dataset;
+    props.onClick(date);
+  }
+  const style = props.active ? { color:'red'} : {};
+
+  return (
+    <li style={style}
+      data-date={props.date.toISOString()}
+      onClick={handleClick}>
+      {props.date.format('MMMM')}
+    </li>
+  ) 
+}
+
+interface DayItemProps {
+  date: Moment;
+  onClick: (date:string) => void;
+  active: boolean;
+}
+
+const DayItem:React.SFC<DayItemProps> = props => {
+
+  const handleClick = (event:React.MouseEvent<HTMLLIElement>) => {
+    const { date } = event.currentTarget.dataset;
+    props.onClick(date);
+  }
+  const style = props.active ? { color:'red'} : {};
+
+  return (
+    <li style={style}
+      data-date={props.date.toISOString()}
+      onClick={handleClick}>
+      {props.date.format('DD MMMM')}
+    </li>
+  ) 
 }
