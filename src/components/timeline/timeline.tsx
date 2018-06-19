@@ -62,9 +62,9 @@ export default class TimeLine extends React.Component<Props, State> {
       const curValue = this.dates[i].value;
       if (Array.isArray(curValue)) {
         for(let j = 0; j < curValue.length; j++) {
-          if (curValue[j].isSame(defaultDate, 'day')) return { month: i, date: j}
+          if (curValue[j].isSame(defaultDate, 'day')) return { month: i, date: j};
         }
-      }
+      } else if (curValue.isSame(defaultDate, 'day')) return { month: i, date: 0 };
     }
     return { month: 0, date: 0 };
   }
