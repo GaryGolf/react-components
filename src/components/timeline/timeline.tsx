@@ -18,7 +18,6 @@ interface Props {
   tomorrow?: boolean;
   weekend?: boolean;
   type?: 'string' | 'number' | 'Date' | 'Moment';
-  dates?: Set<DateType> | Array<DateType>;
   days?: number;
   defaultValue?: DateType
   onChange:(value:DateType) => void;
@@ -31,9 +30,8 @@ interface State {
 
 export default class TimeLine extends React.Component<Props, State> {
   private dates:Option[];
-  private type:string;
   private dir: boolean;
-  static defaultProps = { days: 120 };
+  static defaultProps = { days: 120, type: 'Date' };
 
   public constructor(props:Props) {
     super(props);
@@ -48,10 +46,8 @@ export default class TimeLine extends React.Component<Props, State> {
   }
 
   private setUpTimeLine = (props:Props) => {
-    const dates = [... new Set(props.dates)];
-    this.type = props.type || !props.dates ? 'Date' : this.getInputType(dates.shift());
     const weekend = this.setUpWeekend(props);
-    const timeline = !props.dates ? this.prepareCalendar(props) :this.prepareTimeLine(dates);
+    const timeline = this.prepareCalendar(props)
     this.dates = weekend.concat(timeline);
   }
 
@@ -95,50 +91,9 @@ export default class TimeLine extends React.Component<Props, State> {
       },[])
   }
 
-  private prepareTimeLine = (dates:Array<DateType>):Option[] => {
-    if (!dates || !dates.length) return null;
-
-    const now = moment().unix();
-    let curMonth:number = null;
-    let curYear:number = null;
-
-// should remove Set
-
-    return [... new Set(dates)]
-      .map(d => moment(d).minutes(0).seconds(0).milliseconds(0))
-      .filter(d => d.isValid() && d.unix() > now)
-      .sort((a, b) => a.unix() - b.unix())
-      .reduce((acc, d) => acc.some(m => m.unix() == d.unix()) ? acc : [...acc, d],[])
-      .reduce((acc:Option[], d) => {
-        const month = d.month();
-        const year = d.year();
-        const label = d.format('MMMM');
-
-        if (curMonth != month || curYear != year) {
-          acc.push({ label, value: [d] })
-        } else {
-          const { value } = acc.slice(-1).pop();
-          if(Array.isArray(value)) value.push(d)
-        }
-        curMonth = month;
-        curYear = year;
-        return acc;
-      },[])
-  }
-
-  private getInputType = (sample:DateType):string => {
-    switch(typeof sample) {
-      case 'string' :
-      case 'number' :
-        return typeof sample;
-      default :
-        if (!!sample['isValid']) return 'Moment';
-        return 'Date';
-    }
-  }
 
   private format = (value:Moment):DateType => {
-    switch(this.type) {
+    switch(this.props.type) {
       case 'string' : return value.format();
       case 'number' : return value.unix();
       case 'Date' : return value.toDate();

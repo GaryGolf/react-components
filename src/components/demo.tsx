@@ -2,43 +2,30 @@ import * as React from 'react'
 
 // import Paragraph from './paragraph/paragraph'
 // import Input from './input'
-import Timeline from './timeline';
+import Timeline from './timeline/timeline-datepicker';
 import * as moment from 'moment'
 
+type Moment = moment.Moment;
+type DateType = number | string | Date | Moment
+
 interface Props {}
-interface State {}
+interface State {
+  date: DateType;
+}
 
 export default class Demo extends React.Component<Props, State> {
 
     constructor(props:Props){
-        super(props)
+      super(props)
+      this.state = { date: new Date(2018, 5, 22) };
+    }
 
+    private handleDateChange = (date: DateType): void => {
+      console.log(date);
+      this.setState({ date });
     }
  
     render(){
-        
-        const dates = new Set()
-        // dates.add(1318874398)
-        // dates.add('2020-12-25')
-        // dates.add(moment().add(2,'days'))
-        dates.add(new Date(2018, 11, 6))
-        dates.add(new Date(2018, 11, 12))
-        dates.add(new Date(2018, 10, 19))
-        dates.add(new Date(2018, 9, 16))
-        dates.add(new Date(2018, 9, 26))
-        dates.add(new Date(2018, 9, 17))
-        dates.add(new Date(2018, 9, 15))
-        dates.add(new Date(2018, 9, 31))
-        dates.add(new Date(2018, 8, 11))
-        dates.add(new Date(2018, 8, 22))
-        dates.add(new Date(2018, 7, 12))
-        dates.add(new Date(2018, 6, 12))
-        dates.add(new Date(2018, 5, 21))
-        dates.add(new Date(2018, 4, 18))
-        dates.add(new Date(2018, 4, 11))
-        dates.add(new Date(2019, 0, 1))
-        dates.add('2020-12-25')
-        dates.add(null)
 
         return (
             <div style={{margin:'20px'}}>
@@ -47,12 +34,10 @@ export default class Demo extends React.Component<Props, State> {
                   Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia dolorum cumque accusantium perspiciatis, minima sequi deleniti qui vel minus magni, vitae officiis, aspernatur. Accusantium blanditiis adipisci provident, vitae minus voluptatem id eaque quam error assumenda molestiae deleniti, placeat. Sit temporibus labore delectus blanditiis ullam, consectetur sint nam vitae at eos!
               </Paragraph> */}
               <Timeline 
-                // dates={dates}
-                onChange={console.log}      
+                onChange={this.handleDateChange}      
                 type="Date"
-                defaultValue = {'2018-1-23'}
-                today tomorrow weekend          
-              />
+                value = {this.state.date}
+              />        
             </div>
         )
     }
