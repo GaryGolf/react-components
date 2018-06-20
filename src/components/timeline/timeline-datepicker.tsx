@@ -19,28 +19,33 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
     monthCount: 4,
     type: 'Date'
   }
-  private dir: string;
+  private dir = 'down';
   private container: HTMLDivElement;
 
   public componentDidUpdate() {
-    this.scrollActiveElementIntoView()
+    !!this.dir  && this.scrollActiveElementIntoView()
   }
 
   private handleDateClick = (date: string) => {
+    this.dir = null;
     const value = this.format(date)
     this.props.onChange(value);
   }
 
+  private handleMonthClick = (date: string) => {
+    this.dir = 'down';
+    const value = this.format(date);
+    this.props.onChange(value);
+  }
+
   private handleButtonClick = (event:React.MouseEvent<HTMLButtonElement>) => {
-    const { dir } = event.currentTarget.dataset;
-    const UP = dir == 'up';
-    const DOWN = dir == 'down';
-    this.dir = dir;
+    this.dir = event.currentTarget.dataset.dir;
+    const UP = this.dir == 'up';
     const value = moment(this.props.value);
     let date:Moment = moment();
     switch(true) {
       case UP && this.tomorrow().isSame(value) :
-        date = this.today()
+        date = this.today();
         break;
       case UP && this.weekend().isSame(value) :
        date = this.tomorrow();
@@ -49,20 +54,20 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
         date = this.weekend();
         break;
       case UP :
-        date = moment(value).subtract(1, 'day')
+        date = moment(value).subtract(1, 'day');
         break;
 
-      case DOWN && this.today().isSame(value) :
+      case !UP && this.today().isSame(value) :
         date = this.tomorrow();
         break;
-      case DOWN && this.tomorrow().isSame(value) :
+      case !UP && this.tomorrow().isSame(value) :
         date = this.weekend();
         break;
-      case DOWN && this.weekend().isSame(value) :
+      case !UP && this.weekend().isSame(value) :
         date = moment().add(1, 'day').startOf('day');
         break;
-      case DOWN :
-        date = moment(value).add(1, 'day')
+      case !UP :
+        date = moment(value).add(1, 'day');
         break;
     }
 
@@ -99,7 +104,7 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
           key={m.format('MMMM YYYY')}
           date={m} 
           label={m.format('MMMM')}
-          onClick={this.handleDateClick}
+          onClick={this.handleMonthClick}
           active={x.isSame(m, 'month') && specialDay}
         />
     ));
