@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as moment from 'moment';
+import ScrollOver from './scroll-over';
 import * as style from './timeline.css';
 
 
@@ -41,6 +42,46 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
     }
   }
 
+  private renderMonthList = (past = true) => {
+    const { after, before, value } = this.props;
+    const x = moment(value);
+    const specialDay = x.milliseconds() != 999 || x.seconds() != 59;
+
+    return new Array(moment(before).diff(moment(after), 'months'))
+      .fill(null)
+      .map((x, i) => moment(after).add(i, 'month'))
+      .map(m => m.isSame(moment(), 'month') ? moment().add(1, 'day').startOf('d') : m.startOf('month'))
+      // .map(m => { console.log(m.format('MMMM')); return m})
+      .filter(m => past ? m.isSameOrBefore(x, 'month') : m.isAfter(x, 'month') )
+      .map(m => (
+        <SpecialDate
+          key={m.format('MMMM YYYY')}
+          date={m} 
+          label={m.format('MMMM')}
+          onClick={this.handleDateClick}
+          active={x.isSame(m, 'month') && specialDay}
+        />
+    ));
+  }
+
+  private renderDayList = () => {
+    const { value } = this.props;
+    if (!value || !moment(value).isValid() || moment(value).milliseconds() == 999) return null;
+    return new Array(moment(value).daysInMonth())
+      .fill(null)
+      .map((x, i) => moment(value).startOf('month').add(i, 'days'))
+      // .map(m => { console.log(m.format('DD MMMM')); return m})
+      .filter(m => m.isAfter(moment()), 'day')
+      .map(m => (
+        <DayItem
+          key={m.format('DD MMMM')}
+          date={m}
+          onClick={this.handleDateClick}
+          active={moment(value).isSame(m)}
+        />
+      ));
+  }
+
   public render() {
     // const value = !this.props.value || !moment(this.props.value).isValid() ? moment() : moment(this.props.value);
     const value = moment(this.props.value);
@@ -54,9 +95,13 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
     const tomorrowMoment = moment().add(1, 'day').hours(5).endOf('hour');
     const weekendMoment = weekend.hours(5).endOf('hour');
 
+    const past = this.renderMonthList(true);
+    const future = this.renderMonthList(false);
+    const days = this.renderDayList()
+
     return (
       <div>
-        <div>
+        <ScrollOver maxWidth="100px" maxHeight="360px">
           <SpecialDate // Today
             date={todayMoment}
             label={moment().format('DD MMMM')}
@@ -75,25 +120,12 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
             active={weekendMoment.isSame(value)}
             onClick={this.handleDateClick}
           />
-          <MonthList
-            value={value}
-            after={after}
-            before={before}
-            past={true}
-            onClick={this.handleDateClick}
-          />
-          <DaysList 
-            value={value}
-            onClick={this.handleDateClick}
-          />
-          <MonthList
-            value={value}
-            after={after}
-            before={before}
-            past={false}
-            onClick={this.handleDateClick}
-          />
-        </div>
+          {past}
+          <ScrollOver maxWidth="100px" maxHeight="120px">
+            {days}
+          </ScrollOver>
+          {future}
+        </ScrollOver>
       </div>
     )
   }
@@ -125,32 +157,6 @@ const SpecialDate:React.SFC<SpecialDateProps> = props => {
 }
 
 
-// interface MonthItemProps {
-//   date: Moment;
-//   onClick: (date:string) => void;
-//   active: boolean;
-// }
-
-// const MonthItem:React.SFC<MonthItemProps> = props => {
-
-
-//   const handleClick = (event:React.MouseEvent<HTMLDivElement>) => {
-//     const { date } = event.currentTarget.dataset;
-//     props.onClick(date);
-//   }
-
-//   const style = props.active ? { color:'red'} : {};
-
-//   return (
-//     <div style={style}
-//       data-date={props.date.toISOString()}
-//       onClick={handleClick}>
-//       {props.date.format('MMMM')}
-//     </div>
-//   ) 
-// }
-
-
 
 interface DayItemProps {
   date: Moment;
@@ -175,62 +181,3 @@ const DayItem:React.SFC<DayItemProps> = props => {
   ) 
 }
 
-
-
-interface DaysListProps {
-  value: DateType;
-  onClick: (date:string) => void;
-}
-
-const DaysList:React.SFC<DaysListProps> = props => {
-  const { value } = props;
-  if (!value || !moment(value).isValid()) return null;
-  const days = new Array(moment(value).daysInMonth())
-    .fill(null)
-    .map((x, i) => moment(value).startOf('month').add(i, 'days'))
-    // .map(m => { console.log(m.format('DD MMMM')); return m})
-
-    .filter(m => m.isAfter(moment()), 'day')
-    .map(m => (
-      <DayItem
-        key={m.format('DD MMMM')}
-        date={m}
-        onClick={props.onClick}
-        active={moment(value).isSame(m)}
-      />
-    ));
-  return <div>{days}</div>
-}
-
-
-
-interface MonthListProps {
-  value: DateType;
-  after: DateType;
-  before: DateType;
-  onClick: (date:string) => void;
-  past?: boolean;
-}
-
-const MonthList:React.SFC<MonthListProps> = props => {
-  const { after, before, value, past} = props;
-
-  const x = moment(value);
-  const months = new Array(moment(before).diff(moment(after), 'months'))
-    .fill(null)
-    .map((x, i) => moment(after).add(i, 'month'))
-    .map(m => m.isSame(moment(), 'month') ? moment().add(1, 'day').startOf('d') : m.startOf('month'))
-    // .map(m => { console.log(m.format('MMMM')); return m})
-    .filter(m => past ? m.isSameOrBefore(x, 'month') : m.isAfter(x, 'month') )
-    .map(m => (
-      <SpecialDate
-        key={m.format('MMMM YYYY')}
-        date={m} 
-        label={m.format('MMMM')}
-        onClick={props.onClick}
-        active={x.isSame(m, 'month') && x.milliseconds() != 999}
-      />
-  ))
-
-  return <div>{months}</div>
-}
