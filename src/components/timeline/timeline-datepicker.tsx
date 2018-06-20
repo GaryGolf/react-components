@@ -27,12 +27,14 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
 
   private renderMonth = () => {
     const { after, before, value } = this.props;
-    const months =  new Array(moment(before).diff(moment(after), 'months'))
+
+    const months = new Array(moment(before).diff(moment(after), 'months'))
       .fill(null)
-      .map((x, i) => moment().hours(0).minutes(0).seconds(0).milliseconds(0).add(i, 'month'))
+      .map((x, i) => moment(after).startOf('month').add(i, 'month'))
+      //.map(m => { console.log(m.format('MMMM')); return m})
 
     const past = months
-      .filter(m => m.isSameOrBefore(moment(value).startOf('month')))
+      .filter(m => m.isSameOrBefore(moment(value), 'month'))
       .map(m => (
         <MonthItem 
           key={m.format('MMMM YYYY')}
@@ -44,7 +46,7 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
       ))
     
     const futr = months
-      .filter(m => m.isAfter(moment(value).startOf('month')))
+      .filter(m => m.isAfter(moment(value), 'month'))
       .map(m => (
         <MonthItem 
           key={m.format('MMMM YYYY')}
@@ -63,10 +65,12 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
   }
 
 
+
   private renderDays = () => {
     const { value } = this.props;
     if (!value || !moment(value).isValid()) return null;
-    const now = moment();
+    const now = moment().startOf('day');
+    
     const days = new Array(moment(value).daysInMonth())
       .fill(null)
       .map((x, i) => moment(value).startOf('month').add(i, 'days'))
