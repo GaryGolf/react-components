@@ -73,9 +73,10 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
       // .map(m => { console.log(m.format('DD MMMM')); return m})
       .filter(m => m.isAfter(moment()), 'day')
       .map(m => (
-        <DayItem
+        <SpecialDate
           key={m.format('DD MMMM')}
           date={m}
+          label={` - ${m.format('DD MMMM')}`}
           onClick={this.handleDateClick}
           active={moment(value).isSame(m)}
         />
@@ -85,8 +86,6 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
   public render() {
     // const value = !this.props.value || !moment(this.props.value).isValid() ? moment() : moment(this.props.value);
     const value = moment(this.props.value);
-    const before = moment(this.props.before);
-    const after = moment(this.props.after);
     const saturday = moment().isoWeekday('Saturday');
     const sunday = moment().isoWeekday('Sunday');
     const weekend = moment().isSameOrBefore(saturday, 'day') ? saturday : sunday;
@@ -154,30 +153,5 @@ const SpecialDate:React.SFC<SpecialDateProps> = props => {
       {props.label}
     </div>
   )
-}
-
-
-
-interface DayItemProps {
-  date: Moment;
-  onClick: (date:string) => void;
-  active: boolean;
-}
-
-const DayItem:React.SFC<DayItemProps> = props => {
-
-  const handleClick = (event:React.MouseEvent<HTMLDivElement>) => {
-    const { date } = event.currentTarget.dataset;
-    props.onClick(date);
-  }
-  const style = props.active ? { color:'red'} : {};
-
-  return (
-    <div style={style}
-      data-date={props.date.toISOString()}
-      onClick={handleClick}>
-      &nbsp;{props.date.format('DD MMMM')}
-    </div>
-  ) 
 }
 
