@@ -54,8 +54,6 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
     const tomorrowMoment = moment().add(1, 'day').hours(5).endOf('hour');
     const weekendMoment = weekend.hours(5).endOf('hour');
 
-    console.log(tomorrowMoment.toDate())
-
     return (
       <div>
         <div>
