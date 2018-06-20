@@ -9,23 +9,65 @@ type DateType = string | number | Date | Moment;
 
 interface Props {
   type?: 'string' | 'number' | 'Date' | 'Moment';
-  after?: DateType;
-  before?: DateType;
+  monthCount?: number;
   value: DateType
   onChange:(value:DateType) => void;
 }
 
 export default class TimelineDatepicker extends React.Component<Props, null> {
   static defaultProps = {
-    after: moment(),
-    before: moment().add(9,'months'),
+    monthCount: 4,
     type: 'Date'
+  }
+  private dir: string;
+  private container: HTMLDivElement;
+
+  public componentDidUpdate() {
+    this.scrollActiveElementIntoView()
   }
 
   private handleDateClick = (date: string) => {
-  
     const value = this.format(date)
     this.props.onChange(value);
+  }
+
+  private handleButtonClick = (event:React.MouseEvent<HTMLButtonElement>) => {
+    const { dir } = event.currentTarget.dataset;
+    const UP = dir == 'up';
+    const DOWN = dir == 'down';
+    this.dir = dir;
+    const value = moment(this.props.value);
+    let date:Moment = moment();
+    switch(true) {
+      case UP && this.tomorrow().isSame(value) :
+        date = this.today()
+        break;
+      case UP && this.weekend().isSame(value) :
+       date = this.tomorrow();
+       break;
+      case UP && moment().add(1, 'day').startOf('day').isSame(value) :
+        date = this.weekend();
+        break;
+      case UP :
+        date = moment(value).subtract(1, 'day')
+        break;
+
+      case DOWN && this.today().isSame(value) :
+        date = this.tomorrow();
+        break;
+      case DOWN && this.tomorrow().isSame(value) :
+        date = this.weekend();
+        break;
+      case DOWN && this.weekend().isSame(value) :
+        date = moment().add(1, 'day').startOf('day');
+        break;
+      case DOWN :
+        date = moment(value).add(1, 'day')
+        break;
+    }
+
+    const val = this.format(date.toISOString())
+    this.props.onChange(val);
   }
 
   private format = (isoDateString:string):DateType => {
@@ -43,15 +85,14 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
   }
 
   private renderMonthList = (past = true) => {
-    const { after, before, value } = this.props;
+    const { value, monthCount } = this.props;
     const x = moment(value);
     const specialDay = x.milliseconds() != 999 || x.seconds() != 59;
 
-    return new Array(moment(before).diff(moment(after), 'months'))
+    return new Array(monthCount)
       .fill(null)
-      .map((x, i) => moment(after).add(i, 'month'))
+      .map((x, i) => moment().add(i, 'month'))
       .map(m => m.isSame(moment(), 'month') ? moment().add(1, 'day').startOf('d') : m.startOf('month'))
-      // .map(m => { console.log(m.format('MMMM')); return m})
       .filter(m => past ? m.isSameOrBefore(x, 'month') : m.isAfter(x, 'month') )
       .map(m => (
         <SpecialDate
@@ -70,8 +111,7 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
     return new Array(moment(value).daysInMonth())
       .fill(null)
       .map((x, i) => moment(value).startOf('month').add(i, 'days'))
-      // .map(m => { console.log(m.format('DD MMMM')); return m})
-      .filter(m => m.isAfter(moment()), 'day')
+      .filter(m => m.isAfter(moment()))
       .map(m => (
         <SpecialDate
           key={m.format('DD MMMM')}
@@ -83,48 +123,79 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
       ));
   }
 
-  public render() {
-    // const value = !this.props.value || !moment(this.props.value).isValid() ? moment() : moment(this.props.value);
-    const value = moment(this.props.value);
+  private scrollActiveElementIntoView = () => {
+    if (!this.container) return;
+    const element = this.container.querySelector('[data-active=true]') as HTMLDivElement;
+    if(!element) return;
+    if (this.dir == 'down') {
+      element.parentElement.scrollTo(0, element.offsetTop)
+      this.container.parentElement.scrollTo(0, this.container.offsetTop - element.offsetHeight);
+    } else {
+      element.parentElement.scrollTo(0, element.offsetTop + element.offsetHeight - 
+        element.parentElement.offsetHeight);
+      this.container.parentElement.scrollTo(0, this.container.offsetTop + 
+        this.container.offsetHeight - this.container.parentElement.offsetHeight);
+    }
+  }
+
+  private today = () => moment().hours(5).endOf('hour');
+  private tomorrow = () => moment().add(1, 'day').hours(5).endOf('hour');
+  private weekend = () => {
     const saturday = moment().isoWeekday('Saturday');
     const sunday = moment().isoWeekday('Sunday');
     const weekend = moment().isSameOrBefore(saturday, 'day') ? saturday : sunday;
+    return weekend.hours(5).endOf('hour');
+  }
+  private lastDate = () => moment().add(this.props.monthCount - 1, 'month').endOf('month').startOf('day')
 
-    const todayMoment = moment().hours(5).endOf('hour');
-    const tomorrowMoment = moment().add(1, 'day').hours(5).endOf('hour');
-    const weekendMoment = weekend.hours(5).endOf('hour');
-
+  public render() {
+    // const value = !this.props.value || !moment(this.props.value).isValid() ? moment() : moment(this.props.value);
+    const value = moment(this.props.value);
     const past = this.renderMonthList(true);
     const future = this.renderMonthList(false);
     const days = this.renderDayList()
 
     return (
       <div>
+        <button 
+          data-dir="up"
+          disabled={this.today().isSame(value)}
+          onClick={this.handleButtonClick}>
+          up
+        </button>
         <ScrollOver maxWidth="100px" maxHeight="360px">
           <SpecialDate // Today
-            date={todayMoment}
+            date={this.today()}
             label={moment().format('DD MMMM')}
-            active={todayMoment.isSame(value)}
+            active={this.today().isSame(value)}
             onClick={this.handleDateClick}
           />
           <SpecialDate 
-            date={tomorrowMoment}
+            date={this.tomorrow()}
             label={'Tomorrow'}
-            active={tomorrowMoment.isSame(value)}
+            active={this.tomorrow().isSame(value)}
             onClick={this.handleDateClick}
           />
           <SpecialDate 
-            date={weekend}
+            date={this.weekend()}
             label={'Weekend'}
-            active={weekendMoment.isSame(value)}
+            active={this.weekend().isSame(value)}
             onClick={this.handleDateClick}
           />
           {past}
-          <ScrollOver maxWidth="100px" maxHeight="120px">
+          <ScrollOver maxWidth="100px" 
+            maxHeight="120px" 
+            getContainerRef={el => this.container = el}>
             {days}
           </ScrollOver>
           {future}
         </ScrollOver>
+        <button 
+          data-dir="down"
+          disabled={this.lastDate().isSame(value)}
+          onClick={this.handleButtonClick}>
+          down
+        </button>
       </div>
     )
   }
@@ -147,7 +218,8 @@ const SpecialDate:React.SFC<SpecialDateProps> = props => {
   }
   
   return (
-    <div style={style} 
+    <div style={style}
+      data-active={props.active}
       data-date={props.date.toISOString()} 
       onClick={handleClick}>
       {props.label}
