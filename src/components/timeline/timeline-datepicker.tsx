@@ -21,79 +21,110 @@ export default class TimelineDatepicker extends React.Component<Props, null> {
     type: 'Date'
   }
 
-  private handleMonthClick = (date: string) => {
-    this.props.onChange(date);
+  private handleDateClick = (date: string) => {
+    if (moment(date).milliseconds() == 999) {
+      console.log('bingo')
+    }
+    const value = this.format(date)
+    this.props.onChange(value);
   }
 
-  private renderMonth = () => {
-    const { after, before, value } = this.props;
-
-    const months = new Array(moment(before).diff(moment(after), 'months'))
-      .fill(null)
-      .map((x, i) => moment(after).add(i, 'month'))
-      .map(m => { console.log(m.format('MMMM')); return m})
-
-    const past = months
-      .filter(m => m.isSameOrBefore(moment(value), 'month'))
-      .map(m => (
-        <MonthItem 
-          key={m.format('MMMM YYYY')}
-          date={m} 
-          data-date={m.toISOString()}
-          onClick={this.handleMonthClick}
-          active={moment(value).isSame(m, 'month')}
-        />
-      ))
-    
-    const futr = months
-      .filter(m => m.isAfter(moment(value), 'month'))
-      .map(m => (
-        <MonthItem 
-          key={m.format('MMMM YYYY')}
-          date={m} 
-          onClick={this.handleMonthClick}
-          active={moment(value).isSame(m, 'month')}
-        />
-      ))
-
-    const specialDays = [
-      <li key="today">{moment().format('DD MMMM')}</li>,
-      <li key="tomorrow">{'Tomorrow'}</li>,
-      <li key="weekend">{'Weekend'}</li>
-    ];
-    return [ specialDays.concat(past), futr];
+  private format = (isoDateString:string):DateType => {
+    switch(this.props.type) {
+      case 'string':
+        return isoDateString;
+      case 'number':
+        return moment(isoDateString).unix()
+      case 'Moment':
+        return moment(isoDateString);
+      case 'Date':
+      default :
+       return new Date(isoDateString);
+    }
   }
 
   public render() {
-    const { after, before } = this.props;
-    const value = !this.props.value || !moment(this.props.value).isValid() ? moment() : this.props.value;
+    // const value = !this.props.value || !moment(this.props.value).isValid() ? moment() : moment(this.props.value);
+    const value = moment(this.props.value);
+    const before = moment(this.props.before);
+    const after = moment(this.props.after);
+    const saturday = moment().isoWeekday('Saturday');
+    const sunday = moment().isoWeekday('Sunday');
+    const weekend = moment().isSameOrBefore(saturday, 'day') ? saturday : sunday;
 
     return (
       <div>
         <div>
+          <SpecialDate // Today
+            date={moment()}
+            label={moment().format('DD MMMM')}
+            value={value}
+            onClick={this.handleDateClick}
+          />
+          <SpecialDate 
+            date={moment().add(1, 'day')}
+            label={'Tomorrow'}
+            value={value}
+            onClick={this.handleDateClick}
+          />
+          <SpecialDate 
+            date={weekend}
+            label={'Weekend'}
+            value={value}
+            onClick={this.handleDateClick}
+          />
           <MonthList
-            value={moment(value)}
-            after={moment(after)}
-            before={moment(before)}
+            value={value}
+            after={after}
+            before={before}
             past={true}
-            onClick={this.handleMonthClick}
+            onClick={this.handleDateClick}
           />
           <DaysList 
-            value={moment(value)}
-            onClick={this.handleMonthClick}
+            value={value}
+            onClick={this.handleDateClick}
           />
           <MonthList
-            value={moment(value)}
-            after={moment(after)}
-            before={moment(before)}
+            value={value}
+            after={after}
+            before={before}
             past={false}
-            onClick={this.handleMonthClick}
+            onClick={this.handleDateClick}
           />
         </div>
       </div>
     )
   }
 }
+
+
+interface SpecialDateProps {
+  label: string;
+  date: Moment;
+  value: Moment;
+  onClick: (date:string) => void;
+}
+
+const SpecialDate:React.SFC<SpecialDateProps> = props => {
+
+  const date = moment(props.date).hours(5).endOf('hour');
+  const handleClick = (event:React.MouseEvent<HTMLDivElement>) => {
+    const { date } = event.currentTarget.dataset;
+    props.onClick(date)
+  }
+  // const active = moment(props.value).milliseconds() == 999
+  const active = moment(props.value).isSame(date)
+  const style = active ? { color:'red'} : {};
+  
+  return (
+    <div style={style} 
+      data-date={date.toISOString()} 
+      onClick={handleClick}>
+      {props.label}
+    </div>
+  )
+}
+
 
 interface MonthItemProps {
   date: Moment;
@@ -169,7 +200,7 @@ const DaysList:React.SFC<DaysListProps> = props => {
         key={m.format('DD MMMM')}
         date={m}
         onClick={props.onClick}
-        active={moment(value).isSame(m, 'day')}
+        active={moment(value).isSame(m)}
       />
     ));
   return <div>{days}</div>
