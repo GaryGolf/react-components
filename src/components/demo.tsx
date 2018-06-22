@@ -4,6 +4,7 @@ import * as React from 'react'
 // import Input from './input'
 import Timeline from './timeline/timeline-datepicker';
 import StickyTimeLine from './sticky-timeline';
+import Accordion from './test';
 import * as moment from 'moment'
 
 type Moment = moment.Moment;
@@ -39,7 +40,8 @@ export default class Demo extends React.Component<Props, State> {
                 type="Date"
                 value = {this.state.date}
               />         */}
-              <StickyTimeLine />
+              {/* <StickyTimeLine /> */}
+              <Accordion/>
             </div>
         )
     }
