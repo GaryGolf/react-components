@@ -1,4 +1,9 @@
 .accordion {
    height: 300px;
-   overflow: auto;
+   display: flex;
+   flex-flow: column nowrap;
+   justify-content: space-between;
+}
+.container {
+  overflow: auto;
 }

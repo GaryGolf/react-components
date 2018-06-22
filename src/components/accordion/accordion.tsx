@@ -61,21 +61,19 @@ export default class Accordion extends React.Component<Props, State> {
     const { children } = this.props;
 
     const above = this.state.elements
-      .filter(e => !['inside', 'below'].includes(e.position))
+      .filter(e => ![Waypoint.inside, Waypoint.below].includes(e.position))
       .map(e => <div key={e.title}>{e.title}</div>);
 
     const below = this.state.elements
-      .filter(e => !['inside', 'above'].includes(e.position))
+      .filter(e => ![Waypoint.inside, Waypoint.above].includes(e.position))
       .map(e => <div key={e.title}>{e.title}</div>);
 
     const chu = React.Children.map(children, (item, idx) => {
       const el = item as React.ReactElement<HTMLHeadingElement>;
       if (el.type == 'h4') {
         return (
-          <Waypoint data-idx="12"
-            onPositionChange={e => this.handleWaypointPositionChange(e, idx)}
-            //onLeave={this.handleWaypointLeave}
-            >
+          <Waypoint topOffset="12px" bottomOffset="12px"
+            onPositionChange={e => this.handleWaypointPositionChange(e, idx)}>
             {React.createElement('div', {...el.props, id: idx})}
           </Waypoint>
         )
@@ -84,13 +82,13 @@ export default class Accordion extends React.Component<Props, State> {
     })
 
     return (
-      <div>
-        {above}
-        <div className={s.accordion}
+      <div className={s.accordion}>
+        <div>{above}</div>
+        <div className={s.container}
           ref={el => this.container = el}>
           {chu}
         </div>
-        {below}
+        <div>{below}</div>
       </div>
     )
   }
