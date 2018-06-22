@@ -15,26 +15,20 @@ const styles = `
 export default class StyckyTimeLine extends React.Component<Props, null> {
 
   private renderSticky = () => {
-    return [1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-      <StickyContainer
-        key={i}
-        className="container"
-        style={{ background: 'lightblue' }}
-      >
-        <Sticky>
-          {({ style }) => (
-            <div style={{ ...style, background: 'white', height:'80px', overflow:'auto' }}>{'header '+ i}</div>
-          )}
-        </Sticky>
-
-        <h2 className="text-center">{`<StickyContainer #${i} />`}</h2>
-      </StickyContainer>
+    return new Array(30).fill(null).map((x,i) => (
+        <div key={i}>qq</div>
     ))
   }
   render() {
     return (
       <div className="timeline">
-        {this.renderSticky()}
+        <StickyContainer className="events-day" id={'qq'}>
+					<Sticky className="sticky-header" stickyClassName="sticky-header-active" topOffset={-65}>
+						<h3 className="events-day_title">dayTitle</h3>
+					</Sticky>
+					<div className="sticky-spacer"></div>
+					{ this.renderSticky() }
+				</StickyContainer>
         <style>{styles}</style>
       </div>
     )
