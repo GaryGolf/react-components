@@ -43,6 +43,12 @@ export default class Accordion extends React.Component<Props, State> {
     })
   }
 
+  private handleHeaderClick = (event:React.MouseEvent<HTMLDivElement>) => {
+    const { idx } = event.currentTarget.dataset;
+    // if (!this.container) return;
+    document.getElementById(idx).scrollIntoView({ block: 'start',  behavior: 'smooth' });
+  }
+
   private sort = (children):Header[] => React.Children.map(children, (item, idx) => {
       const el = item as React.ReactElement<HTMLHeadingElement>;
       if (el.type == 'h4') {
@@ -66,9 +72,13 @@ export default class Accordion extends React.Component<Props, State> {
 
     const below = this.state.elements
       .filter(e => ![Waypoint.inside, Waypoint.above].includes(e.position))
-      .map(e => <div key={e.title}>{e.title}</div>);
+      .map(e => (
+        <div key={e.title} data-idx={e.index} onClick={this.handleHeaderClick}>
+          {e.title}
+        </div>
+      ));
 
-    const chu = React.Children.map(children, (item, idx) => {
+    const inside = React.Children.map(children, (item, idx) => {
       const el = item as React.ReactElement<HTMLHeadingElement>;
       if (el.type == 'h4') {
         return (
@@ -84,9 +94,8 @@ export default class Accordion extends React.Component<Props, State> {
     return (
       <div className={s.accordion}>
         <div>{above}</div>
-        <div className={s.container}
-          ref={el => this.container = el}>
-          {chu}
+        <div className={s.container} ref={el => this.container = el}>
+          {inside}
         </div>
         <div>{below}</div>
       </div>
