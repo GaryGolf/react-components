@@ -6,7 +6,8 @@ import { uuid } from 'short-uuid';
 import * as s from './accordion.css'
 
 interface Props {
-  children?: JSX.Element | JSX.Element[];
+  className?: string;
+  children: JSX.Element[];
 }
 
 interface State {
@@ -14,7 +15,9 @@ interface State {
 }
 
 export default class StickyAccordion extends React.Component<Props, State> {
+  static defaultProps = { className: '' };
   private container: HTMLDivElement;
+
 
   public constructor(props:Props) {
     super(props);
@@ -62,11 +65,10 @@ export default class StickyAccordion extends React.Component<Props, State> {
         idx, element
       })
     }).filter(item => !!item)
-
   
   render() {
 
-    const { children } = this.props;
+    const { children, className } = this.props;
 
     const above = this.state.elements
       .filter(e => ![Waypoint.inside, Waypoint.below].includes(e.position))
@@ -108,7 +110,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
     })
 
     return (
-      <div className={s.accordion}>
+      <div className={`${s.accordion} ${className}`}>
         <div>{above}</div>
         <div className={s.container} ref={el => this.container = el}>
           {inside}
