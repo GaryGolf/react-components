@@ -1,6 +1,6 @@
 import * as React from 'react';
 import StickyItem from './StickyItem';
-import StickyHeader , { HeadElement } from './StickyHeader';
+import StickyHeader from './StickyHeader';
 import Waypoint from 'react-waypoint';
 import { uuid } from 'short-uuid';
 import * as s from './accordion.css'
@@ -10,7 +10,7 @@ interface Props {
 }
 
 interface State {
-  elements: HeadElement[];
+  elements: StickyElement[];
 }
 
 export default class StickyAccordion extends React.Component<Props, State> {
@@ -49,7 +49,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
   private isHeading = (element:JSX.Element):boolean => 
     ['h1','h2','h3','h4','h5','h6'].includes(element.type as string);
 
-  private sort = (children):HeadElement[] => 
+  private sort = (children):StickyElement[] => 
     React.Children.map(children, (item, idx) => {
       const element = item as JSX.Element;
 

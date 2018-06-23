@@ -1,22 +1,9 @@
 import * as React from 'react';
 import Waypoint from 'react-waypoint';
 
-export interface HeadElement {
-  idx: number;
-  uuid: string;
-  title: string;
-  position: string;
-  element: JSX.Element
-}
-
-export interface Position {
-  uuid: string;
-  position: string;
-}
-
 interface Props {
-  element: HeadElement;
-  onChange: (p:Position) => void;
+  element: StickyElement;
+  onChange: (p:StickyPosition) => void;
   innerRef?: (el:HTMLDivElement) => HTMLDivElement;
 }
 

@@ -1,15 +1,7 @@
 import * as React from 'react';
 
-export interface HeadElement {
-  idx: number;
-  uuid: string;
-  title: string;
-  position: string;
-  element: JSX.Element
-}
-
 interface Props { 
-  element: HeadElement;
+  element: StickyElement;
   onClick: (uuid:string) => void;
 };
 
