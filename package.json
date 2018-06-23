@@ -62,6 +62,7 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-sticky": "5.0.5",
-    "react-waypoint": "^8.0.2"
+    "react-waypoint": "^8.0.2",
+    "short-uuid": "^3.0.0"
   }
 }
