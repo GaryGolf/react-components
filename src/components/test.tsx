@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { StickyAccordion, StickyAccordionItem} from './accordion'
+import StickyAccordion from './Accordion'
 export default class TestAccordion extends React.Component<null, null> {
   render() {
     return (
@@ -19,23 +19,23 @@ export default class TestAccordion extends React.Component<null, null> {
           <div>fsgdf</div>
 
           <h4>header2</h4>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
-          <div>fsgdf</div>
+
+          <div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+            <div>fsgdf</div>
+          </div>
+          
           <div>fsgdf</div>
           <div>fsgdf</div>
           <div>fsgdf</div>
