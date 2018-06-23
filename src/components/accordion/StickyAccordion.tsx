@@ -1,17 +1,8 @@
 import * as React from 'react';
-import StickyHeader from './StickyHeader';
+import StickyHeader , { HeadElement }from './StickyHeader';
 import Waypoint from 'react-waypoint';
 import { uuid } from 'short-uuid';
 import * as s from './accordion.css'
-
-
-interface HeadElement {
-  idx: number;
-  uuid: string;
-  title: string;
-  position: string;
-  element: JSX.Element
-}
 
 interface Props {
   children?: JSX.Element | JSX.Element[];
@@ -36,9 +27,9 @@ export default class StickyAccordion extends React.Component<Props, State> {
     }
   }
   
-  private handleWaypointPositionChange = ({uuid, position}) => {
+  private handleWaypointPositionChange = ({ uuid, position }) => {
     this.setState((state:State) => {
-      const elements = state.elements.map(item => item.uuid == uuid ? { ...item, position } : item)
+      const elements = state.elements.map(item => item.uuid == uuid ? { ...item, position } : item);
       return { elements };
     })
   }
@@ -83,19 +74,6 @@ export default class StickyAccordion extends React.Component<Props, State> {
         </div>
       ));
 
-    // const inside = React.Children.map(children, (item, idx) => {
-    //   const el = item as React.ReactElement<HTMLHeadingElement>;
-    //   if (el.type == 'h4') {
-    //     return (
-    //       <Waypoint topOffset="12px" bottomOffset="12px"
-    //         onPositionChange={e => this.handleWaypointPositionChange(e, idx)}>
-    //         {React.createElement('div', {...el.props, id: idx})}
-    //       </Waypoint>
-    //     )
-    //   }
-    //   return item;
-    // })
-
     const inside = React.Children.map(children, (item, idx) => {
       const element = item as JSX.Element;
 
@@ -106,14 +84,10 @@ export default class StickyAccordion extends React.Component<Props, State> {
         />
       );
 
-      const header = this.state.elements.find(e => e.idx == idx);
-      
-      if (!header) return null;
-
       return (
         <StickyHeader 
           key={idx}
-          element={header}
+          element={this.state.elements.find(e => e.idx == idx)}
           onChange={this.handleWaypointPositionChange}
         />
       );
