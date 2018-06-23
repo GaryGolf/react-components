@@ -1,5 +1,6 @@
 import * as React from 'react';
-import StickyHeader , { HeadElement }from './StickyHeader';
+import StickyItem from './StickyItem';
+import StickyHeader , { HeadElement } from './StickyHeader';
 import Waypoint from 'react-waypoint';
 import { uuid } from 'short-uuid';
 import * as s from './accordion.css'
@@ -34,10 +35,15 @@ export default class StickyAccordion extends React.Component<Props, State> {
     })
   }
 
-  private handleHeaderClick = (event:React.MouseEvent<HTMLDivElement>) => {
-    // const { idx } = event.currentTarget.dataset;
-    // if (!this.container) return;
-    // document.getElementById(idx).scrollIntoView({ block: 'start',  behavior: 'smooth' });
+  private handleHeaderClick = (uuid:string) => {
+    if (!this.container) return;
+    const target = this.container.querySelector(`[data-uuid="${uuid}"]`) as HTMLDivElement;
+    if (!target) return;
+    this.container.scroll({
+      behavior: 'smooth',
+      top: target.offsetTop,
+      left: 0
+    });
   }
 
   private isHeading = (element:JSX.Element):boolean => 
@@ -64,14 +70,22 @@ export default class StickyAccordion extends React.Component<Props, State> {
 
     const above = this.state.elements
       .filter(e => ![Waypoint.inside, Waypoint.below].includes(e.position))
-      .map(e => <div key={e.uuid}>{e.title}</div>);
+      .map(e => (
+        <StickyItem 
+          key={e.uuid} 
+          element={e}
+          onClick={this.handleHeaderClick}
+        />
+      ));
 
     const below = this.state.elements
       .filter(e => ![Waypoint.inside, Waypoint.above].includes(e.position))
       .map(e => (
-        <div key={e.uuid} onClick={this.handleHeaderClick}>
-          {e.title}
-        </div>
+        <StickyItem 
+          key={e.uuid} 
+          element={e}
+          onClick={this.handleHeaderClick}
+        />
       ));
 
     const inside = React.Children.map(children, (item, idx) => {

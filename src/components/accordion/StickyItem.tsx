@@ -1,19 +1,32 @@
 import * as React from 'react';
 
-interface Props { 
+export interface HeadElement {
   idx: number;
   uuid: string;
-  children: string | JSX.Element | React.ReactElement<HTMLHeadingElement>;
-  onClick?: (idx:number) => void;
+  title: string;
+  position: string;
+  element: JSX.Element
+}
+
+interface Props { 
+  element: HeadElement;
+  onClick: (uuid:string) => void;
 };
 
 export default class StickyItem extends React.PureComponent<Props, null> {
-  render() {
-    const children = React.Children.only(this.props.children);
 
+  private handleClick = (event:React.MouseEvent<HTMLDivElement>) => {
+    const { uuid } = this.props.element;
+    this.props.onClick(uuid);
+  }
+
+  render() {
+    const { uuid, element } = this.props.element;
     return (
-      <div
-        {...children.props}
+      <div 
+        {...element.props} 
+        data-uuid={uuid} 
+        onClick={this.handleClick}
       />
     )
   }
