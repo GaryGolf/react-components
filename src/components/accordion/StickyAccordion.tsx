@@ -25,10 +25,10 @@ export default class StickyAccordion extends React.Component<Props, State> {
   }
 
   public componentWillReceiveProps (nextProps:Props) {
-    if (this.props.children != nextProps.children) {
-      const elements = this.sort(nextProps.children);
-      this.setState({ elements });
-    }
+    // if (this.props.children != nextProps.children) {
+    //   const elements = this.sort(nextProps.children);
+    //   this.setState({ elements });
+    // }
   }
   
   private handleWaypointPositionChange = ({ uuid, position }) => {
