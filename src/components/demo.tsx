@@ -2,10 +2,11 @@ import * as React from 'react'
 
 // import Paragraph from './paragraph/paragraph'
 // import Input from './input'
-import Timeline from './timeline/timeline-datepicker';
-import StickyTimeLine from './sticky-timeline';
-import Accordion from './test';
+// import Timeline from './timeline/timeline-datepicker';
+// import StickyTimeLine from './sticky-timeline';
+// import Accordion from './test';
 import * as moment from 'moment'
+import StickyTimeline from './sticky-timeline';
 
 type Moment = moment.Moment;
 type DateType = number | string | Date | Moment
@@ -41,7 +42,11 @@ export default class Demo extends React.Component<Props, State> {
                 value = {this.state.date}
               />         */}
               {/* <StickyTimeLine /> */}
-              <Accordion/>
+              {/* <Accordion/> */}
+              <StickyTimeline
+                value={this.state.date}
+                onChange={this.handleDateChange}
+              />
             </div>
         )
     }
