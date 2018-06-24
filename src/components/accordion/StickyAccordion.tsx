@@ -23,13 +23,6 @@ export default class StickyAccordion extends React.Component<Props, State> {
     super(props);
     this.state = { elements: this.sort(props.children) };
   }
-
-  public componentWillReceiveProps (nextProps:Props) {
-    // if (this.props.children != nextProps.children) {
-    //   const elements = this.sort(nextProps.children);
-    //   this.setState({ elements });
-    // }
-  }
   
   private handleWaypointPositionChange = ({ uuid, position }) => {
     this.setState((state:State) => {
@@ -60,7 +53,6 @@ export default class StickyAccordion extends React.Component<Props, State> {
 
       return ({
         uuid: uuid(),
-        title: element.props.children as string,
         position: null,
         idx, element
       })
@@ -71,7 +63,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
     const { children, className } = this.props;
 
     const above = this.state.elements
-      .filter(e => ![Waypoint.inside, Waypoint.below].includes(e.position))
+      .filter(e => ![Waypoint.inside, Waypoint.below, null].includes(e.position))
       .map(e => (
         <StickyItem 
           key={e.uuid} 
@@ -81,7 +73,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
       ));
 
     const below = this.state.elements
-      .filter(e => ![Waypoint.inside, Waypoint.above].includes(e.position))
+      .filter(e => ![Waypoint.inside, Waypoint.above, null].includes(e.position))
       .map(e => (
         <StickyItem 
           key={e.uuid} 
