@@ -22,7 +22,7 @@ export default class StickyHeader extends React.PureComponent<Props, null> {
 
     return (
       <Waypoint onPositionChange={this.handleWaypointPositionChange}>
-        <div {...element.element.props} 
+        <div {...element.component.props}
           data-idx={element.idx}
           data-uuid={element.uuid}
           ref={innerRef}

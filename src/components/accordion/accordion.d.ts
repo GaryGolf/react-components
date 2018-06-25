@@ -2,7 +2,7 @@ declare interface StickyElement {
   idx: number;
   uuid: string;
   position: string;
-  element: JSX.Element
+  component: JSX.Element;
 }
 
 declare interface StickyPosition {

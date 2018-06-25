@@ -23,6 +23,12 @@ export default class StickyAccordion extends React.Component<Props, State> {
     super(props);
     this.state = { elements: this.sort(props.children) };
   }
+
+  public componentWillReceiveProps(nextProps:Props) {
+    if(this.props.children != nextProps.children) {
+      this.updateElements(nextProps.children);
+    }
+  }
   
   private handleWaypointPositionChange = ({ uuid, position }) => {
     this.setState((state:State) => {
@@ -43,7 +49,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
   }
 
   private isHeading = (element:JSX.Element):boolean => 
-    ['h1','h2','h3','h4','h5','h6'].includes(element.type as string);
+      ['h1','h2','h3','h4','h5','h6'].includes(element.type as string);
 
   private sort = (children):StickyElement[] => 
     React.Children.map(children, (item, idx) => {
@@ -52,11 +58,37 @@ export default class StickyAccordion extends React.Component<Props, State> {
       if (!this.isHeading(element)) return null;
 
       return ({
+        idx,
         uuid: uuid(),
         position: null,
-        idx, element
+        component: element
       })
-    }).filter(item => !!item)
+    }).filter(item => !!item);
+
+  private updateElements = (children) => this.setState(({ elements }) => {
+
+      let index = 0;
+      React.Children.forEach(children, (item, idx) => {
+        const component = item as JSX.Element;
+        if (!this.isHeading(component)) return;
+        
+        const i = elements.findIndex(e => e.component.key == component.key)
+        if (idx < 0) {
+          index ++;
+          elements = [
+            ...elements.slice(0, index),
+            { uuid: uuid(), position: null, idx, component },
+            ...elements.slice(index)
+          ];
+        } else {
+          index = i;
+          elements[i] = { ...elements[i], idx, component };
+        }
+      })
+
+      return { elements: [...elements] }
+    })
+    
   
   render() {
 
@@ -91,11 +123,11 @@ export default class StickyAccordion extends React.Component<Props, State> {
           data-idx={idx}
         />
       );
-
+      const header = this.state.elements.find(e => e.idx == idx)
       return (
         <StickyHeader 
           key={idx}
-          element={this.state.elements.find(e => e.idx == idx)}
+          element={header}
           onChange={this.handleWaypointPositionChange}
         />
       );

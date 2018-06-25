@@ -13,10 +13,10 @@ export default class StickyItem extends React.PureComponent<Props, null> {
   }
 
   render() {
-    const { uuid, element } = this.props.element;
+    const { uuid, component } = this.props.element;
     return (
       <div 
-        {...element.props} 
+        {...component.props} 
         data-uuid={uuid} 
         onClick={this.handleClick}
       />
