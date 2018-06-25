@@ -7,26 +7,24 @@ interface Props {
   innerRef?: (el:HTMLDivElement) => HTMLDivElement;
 }
 
-export default class StickyHeader extends React.PureComponent<Props, null> {
+const StickyHeader:React.SFC<Props> = props => {
 
-  private handleWaypointPositionChange = ({ currentPosition }) => {
+  const { element, innerRef } = props;
+
+  const handleWaypointPositionChange = ({ currentPosition }) => {
     const { element, onChange } = this.props;
     const idx = element.idx;
     const position = currentPosition;
     onChange && onChange({ idx, position });
   }
 
-  public render() {
-    const { element, innerRef } = this.props;
-    if (!element) return null;
+  if (!element) return null;
 
-    return (
-      <Waypoint onPositionChange={this.handleWaypointPositionChange}>
-        <div {...element.component.props}
-          data-idx={element.idx}
-          ref={innerRef}
-        />
-      </Waypoint>
-    );
-  }
+  return (
+    <Waypoint onPositionChange={handleWaypointPositionChange}>
+      <div {...element.component.props} data-idx={element.idx} ref={innerRef} />
+    </Waypoint>
+  );
 }
+
+export default StickyHeader 

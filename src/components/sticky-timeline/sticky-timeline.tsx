@@ -86,9 +86,18 @@ export default class StyckyTimeLine extends React.Component<Props, null> {
     },[]);
 
 
+  private handleTodayClick = (event:React.MouseEvent<HTMLHeadingElement>) => {
+    const { idx } = event.currentTarget.dataset;
+    console.log('idx', idx )
+  }
+
   render() {
     const { value, monthCount } = this.props;
     const calendar = this.renderCalendar(value, monthCount)
+
+    calendar.unshift(
+      <h2 key="today" onClick={this.handleTodayClick}>Today</h2>
+    )
 
     return (
       <div className="timeline" ref={el => this.container = el}>
