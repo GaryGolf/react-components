@@ -21,7 +21,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
 
   public constructor(props:Props) {
     super(props);
-    this.state = { elements: this.sort(props.children) };
+    this.state = { elements: this.sortElements(props.children) };
   }
 
   public componentWillReceiveProps(nextProps:Props) {
@@ -51,7 +51,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
   private isHeading = (element:JSX.Element):boolean => 
       ['h1','h2','h3','h4','h5','h6'].includes(element.type as string);
 
-  private sort = (children):StickyElement[] => 
+  private sortElements = (children):StickyElement[] => 
     React.Children.map(children, (item, idx) => {
       const element = item as JSX.Element;
 
@@ -65,28 +65,24 @@ export default class StickyAccordion extends React.Component<Props, State> {
       })
     }).filter(item => !!item);
 
-  private updateElements = (children) => this.setState(({ elements }) => {
+  private updateElements = (children) => this.setState(state => {
 
-      let index = 0;
+      const elements:StickyElement[] = [];
+
       React.Children.forEach(children, (item, idx) => {
         const component = item as JSX.Element;
         if (!this.isHeading(component)) return;
-        
-        const i = elements.findIndex(e => e.component.key == component.key)
-        if (idx < 0) {
-          index ++;
-          elements = [
-            ...elements.slice(0, index),
-            { uuid: uuid(), position: null, idx, component },
-            ...elements.slice(index)
-          ];
+
+        const element = state.elements.find(e => e.component.key == component.key);
+
+        if (!element) { 
+          elements.push({ uuid: uuid(), position: null, idx, component })
         } else {
-          index = i;
-          elements[i] = { ...elements[i], idx, component };
+          elements.push({ ...element, idx, component });
         }
       })
 
-      return { elements: [...elements] }
+      return { elements: elements.sort((a, b) => a.idx - b.idx) }
     })
     
   

@@ -14,18 +14,20 @@ type DateType = number | string | Date | Moment
 interface Props {}
 interface State {
   date: DateType;
+  monthCount: number;
 }
 
 export default class Demo extends React.Component<Props, State> {
 
     constructor(props:Props){
       super(props)
-      this.state = { date: new Date(2018, 5, 22) };
+      this.state = { date: new Date(2018, 5, 22), monthCount: 1 };
     }
 
     private handleDateChange = (date: DateType): void => {
       console.log(date);
-      this.setState({ date });
+      const monthCount = this.state.monthCount + 1;
+      this.setState({ date, monthCount });
     }
  
     render(){
@@ -45,6 +47,7 @@ export default class Demo extends React.Component<Props, State> {
               {/* <Accordion/> */}
               <StickyTimeline
                 value={this.state.date}
+                monthCount={this.state.monthCount}
                 onChange={this.handleDateChange}
               />
             </div>

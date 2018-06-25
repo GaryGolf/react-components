@@ -46,10 +46,8 @@ export default class StyckyTimeLine extends React.Component<Props, null> {
 
   private container: HTMLDivElement;
   static defaultProps = { type: 'Date', monthCount: 7 }
-  private count: number = 7;
 
   private handleDateClick = (date:Moment) => {
-    this.count++;
     this.props.onChange(date.toDate())
   }
 
@@ -90,10 +88,7 @@ export default class StyckyTimeLine extends React.Component<Props, null> {
 
   render() {
     const { value, monthCount } = this.props;
-    console.log(this.count)
-    const calendar = this.renderCalendar(value, this.count)
-
-    console.log('calendar', calendar.length)
+    const calendar = this.renderCalendar(value, monthCount)
 
     return (
       <div className="timeline" ref={el => this.container = el}>
@@ -105,6 +100,8 @@ export default class StyckyTimeLine extends React.Component<Props, null> {
     )
   }
 }
+
+
 
 interface StickyDateProps {
   className?: string;
