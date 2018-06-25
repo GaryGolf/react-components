@@ -45,10 +45,6 @@ export default class StickyAccordion extends React.Component<Props, State> {
       top: target.offsetTop,
       left: 0
     });
-    // const element = this.state.elements.find(e => e.idx == idx);
-    // if (!!element && !!element.component && !!element.component.props.onClick) {
-    //   element.component.props.onClick()
-    // }
   }
 
   private isHeading = (element:JSX.Element):boolean => 
