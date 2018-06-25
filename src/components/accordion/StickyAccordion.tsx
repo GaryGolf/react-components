@@ -2,7 +2,6 @@ import * as React from 'react';
 import StickyItem from './StickyItem';
 import StickyHeader from './StickyHeader';
 import Waypoint from 'react-waypoint';
-import { uuid } from 'short-uuid';
 import * as s from './accordion.css'
 
 interface Props {
@@ -30,16 +29,16 @@ export default class StickyAccordion extends React.Component<Props, State> {
     }
   }
   
-  private handleWaypointPositionChange = ({ uuid, position }) => {
+  private handleWaypointPositionChange = ({ idx, position }) => {
     this.setState((state:State) => {
-      const elements = state.elements.map(item => item.uuid == uuid ? { ...item, position } : item);
+      const elements = state.elements.map(item => item.idx == idx ? { ...item, position } : item);
       return { elements };
     })
   }
 
-  private handleHeaderClick = (uuid:string) => {
+  private handleHeaderClick = (idx:number) => {
     if (!this.container) return;
-    const target = this.container.querySelector(`[data-uuid="${uuid}"]`) as HTMLDivElement;
+    const target = this.container.querySelector(`[data-idx="${idx}"]`) as HTMLDivElement;
     if (!target) return;
     this.container.scroll({
       behavior: 'smooth',
@@ -59,7 +58,6 @@ export default class StickyAccordion extends React.Component<Props, State> {
 
       return ({
         idx,
-        uuid: uuid(),
         position: null,
         component: element
       })
@@ -76,7 +74,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
         const element = state.elements.find(e => e.component.key == component.key);
 
         if (!element) { 
-          elements.push({ uuid: uuid(), position: null, idx, component })
+          elements.push({ idx, position: null, component })
         } else {
           elements.push({ ...element, idx, component });
         }
@@ -94,7 +92,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
       .filter(e => ![Waypoint.inside, Waypoint.below, null].includes(e.position))
       .map(e => (
         <StickyItem 
-          key={e.uuid} 
+          key={e.idx} 
           element={e}
           onClick={this.handleHeaderClick}
         />
@@ -104,7 +102,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
       .filter(e => ![Waypoint.inside, Waypoint.above, null].includes(e.position))
       .map(e => (
         <StickyItem 
-          key={e.uuid} 
+          key={e.idx} 
           element={e}
           onClick={this.handleHeaderClick}
         />
@@ -115,14 +113,14 @@ export default class StickyAccordion extends React.Component<Props, State> {
 
       if (!this.isHeading(element)) return (
         <element.type {...element.props} 
-          key={idx}
+          key={element.key}
           data-idx={idx}
         />
       );
       const header = this.state.elements.find(e => e.idx == idx)
       return (
         <StickyHeader 
-          key={idx}
+          key={element.key}
           element={header}
           onChange={this.handleWaypointPositionChange}
         />

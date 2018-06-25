@@ -2,22 +2,22 @@ import * as React from 'react';
 
 interface Props { 
   element: StickyElement;
-  onClick: (uuid:string) => void;
+  onClick: (idx:number) => void;
 };
 
 export default class StickyItem extends React.PureComponent<Props, null> {
 
   private handleClick = (event:React.MouseEvent<HTMLDivElement>) => {
-    const { uuid } = this.props.element;
-    this.props.onClick(uuid);
+    const { idx } = this.props.element;
+    this.props.onClick(idx);
   }
 
   render() {
-    const { uuid, component } = this.props.element;
+    const { idx, component } = this.props.element;
     return (
       <div 
         {...component.props} 
-        data-uuid={uuid} 
+        data-idx={idx} 
         onClick={this.handleClick}
       />
     )

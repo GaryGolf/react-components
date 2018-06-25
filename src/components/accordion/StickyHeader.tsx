@@ -11,9 +11,9 @@ export default class StickyHeader extends React.PureComponent<Props, null> {
 
   private handleWaypointPositionChange = ({ currentPosition }) => {
     const { element, onChange } = this.props;
-    const uuid = element.uuid;
+    const idx = element.idx;
     const position = currentPosition;
-    onChange && onChange({ uuid, position });
+    onChange && onChange({ idx, position });
   }
 
   public render() {
@@ -24,7 +24,6 @@ export default class StickyHeader extends React.PureComponent<Props, null> {
       <Waypoint onPositionChange={this.handleWaypointPositionChange}>
         <div {...element.component.props}
           data-idx={element.idx}
-          data-uuid={element.uuid}
           ref={innerRef}
         />
       </Waypoint>
