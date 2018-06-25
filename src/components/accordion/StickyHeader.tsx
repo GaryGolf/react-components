@@ -9,10 +9,9 @@ interface Props {
 
 const StickyHeader:React.SFC<Props> = props => {
 
-  const { element, innerRef } = props;
+  const { element, innerRef, onChange } = props;
 
   const handleWaypointPositionChange = ({ currentPosition }) => {
-    const { element, onChange } = this.props;
     const idx = element.idx;
     const position = currentPosition;
     onChange && onChange({ idx, position });
