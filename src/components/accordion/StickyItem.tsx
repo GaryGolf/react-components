@@ -14,13 +14,7 @@ const StickyItem:React.SFC<Props> = props =>{
     props.onClick(idx);
   }
 
-  return (
-    <div 
-      {...component.props} 
-      data-idx={idx} 
-      onClick={handleClick}
-    />
-  );
+  return <div  {...component.props} onClick={handleClick} />;
 }
 
 export default StickyItem;

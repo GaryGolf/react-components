@@ -42,7 +42,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
     if (!target) return;
     this.container.scroll({
       behavior: 'smooth',
-      top: target.offsetTop,
+      top: target.offsetTop, 
       left: 0
     });
   }
