@@ -3,13 +3,14 @@ import Waypoint from 'react-waypoint';
 
 interface Props {
   element: StickyElement;
+  container?: HTMLDivElement;
   onChange: (p:StickyPosition) => void;
   innerRef?: (el:HTMLDivElement) => HTMLDivElement;
 }
 
 const StickyHeader:React.SFC<Props> = props => {
 
-  const { element, innerRef, onChange } = props;
+  const { element, container, innerRef, onChange } = props;
 
   const handleWaypointPositionChange = ({ currentPosition }) => {
     const idx = element.idx;
@@ -20,7 +21,8 @@ const StickyHeader:React.SFC<Props> = props => {
   if (!element) return null;
 
   return (
-    <Waypoint onPositionChange={handleWaypointPositionChange}>
+    <Waypoint scrollableAncestor={container} 
+      onPositionChange={handleWaypointPositionChange}>
       <div {...element.component.props} data-idx={element.idx} ref={innerRef} />
     </Waypoint>
   );

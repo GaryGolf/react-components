@@ -122,6 +122,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
         <StickyHeader 
           key={element.key}
           element={header}
+          container={this.container}
           onChange={this.handleWaypointPositionChange}
         />
       );
