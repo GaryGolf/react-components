@@ -7,6 +7,7 @@ import * as s from './accordion.css'
 interface Props {
   className?: string;
   children: JSX.Element[];
+  getScrollContainerRef?: (div:HTMLDivElement) => void;
 }
 
 interface State {
@@ -114,7 +115,7 @@ export default class StickyAccordion extends React.Component<Props, State> {
   
   render() {
 
-    const { children, className } = this.props;
+    const { children, className, getScrollContainerRef } = this.props;
 
     const above = this.state.elements
       .filter(e => ![Waypoint.inside, Waypoint.below, null].includes(e.position))
@@ -164,7 +165,12 @@ export default class StickyAccordion extends React.Component<Props, State> {
           up
         </button>
         <div>{above}</div>
-        <div className={s.container} ref={el => this.container = el} onScroll={this.handleContainerScroll}>
+        <div className={s.container} 
+          ref={el => {
+            this.container = el;
+            getScrollContainerRef && getScrollContainerRef(el);
+          }} 
+          onScroll={this.handleContainerScroll}>
           {inside}
         </div>
         <div>{below}</div>
