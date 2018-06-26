@@ -11,6 +11,8 @@ interface Props {
 
 interface State {
   elements: StickyElement[];
+  upBtnDisabled: boolean;
+  downBtnDisabled: boolean;
 }
 
 export default class StickyAccordion extends React.Component<Props, State> {
@@ -20,7 +22,11 @@ export default class StickyAccordion extends React.Component<Props, State> {
 
   public constructor(props:Props) {
     super(props);
-    this.state = { elements: this.sortElements(props.children) };
+    this.state = { 
+      elements: this.sortElements(props.children),
+      upBtnDisabled: true,
+      downBtnDisabled: false
+    };
   }
 
   public componentWillReceiveProps(nextProps:Props) {
@@ -83,6 +89,28 @@ export default class StickyAccordion extends React.Component<Props, State> {
       return { elements: elements.sort((a, b) => a.idx - b.idx) }
     })
     
+  private handleButtonClick = (direction:string) => {
+
+    switch(direction) {
+      case 'UP' :
+        this.container.scrollTo({
+          behavior: 'smooth', left: 0, top: this.container.scrollTop - this.container.clientHeight
+        });
+        break;
+      case 'DOWN' :
+        this.container.scrollTo({
+          behavior: 'smooth', left: 0, top: this.container.scrollTop + this.container.clientHeight
+        });
+    }
+
+  }
+
+  private handleContainerScroll = (event:React.UIEvent<HTMLDivElement>) => {
+    const target = event.currentTarget
+    const upBtnDisabled = target.scrollTop == 0;
+    const downBtnDisabled = target.scrollHeight - target.scrollTop == target.clientHeight;
+    this.setState({ upBtnDisabled, downBtnDisabled });
+  }
   
   render() {
 
@@ -130,11 +158,21 @@ export default class StickyAccordion extends React.Component<Props, State> {
 
     return (
       <div className={`${s.accordion} ${className}`}>
+        <button className=""
+          onClick={this.handleButtonClick.bind(this, 'UP')}
+          disabled={this.state.upBtnDisabled}>
+          up
+        </button>
         <div>{above}</div>
-        <div className={s.container} ref={el => this.container = el}>
+        <div className={s.container} ref={el => this.container = el} onScroll={this.handleContainerScroll}>
           {inside}
         </div>
         <div>{below}</div>
+        <button className="" 
+          onClick={this.handleButtonClick.bind(this, 'DOWN')}
+          disabled={this.state.downBtnDisabled}>
+          down
+        </button>
       </div>
     )
   }
