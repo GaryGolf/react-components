@@ -7,3 +7,7 @@
 .container {
   overflow: auto;
 }
+
+@supports (-moz-appearance:none) {
+  div { color:red; } /* red text in FF */
+}
