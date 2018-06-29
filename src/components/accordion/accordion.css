@@ -8,6 +8,14 @@
   overflow: auto;
 }
 
-@supports (-moz-appearance:none) {
-  div { color:red; } /* red text in FF */
+@-moz-document url-prefix() { /* FF win */
+  .container {
+    width: 100px;
+  }
 }
+
+@supports (-moz-osx-font-smoothing:auto) { /* FF MAC */
+  .container {
+    width: 85px;
+  }
+ }
