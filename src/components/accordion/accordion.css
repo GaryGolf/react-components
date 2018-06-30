@@ -19,3 +19,35 @@
     width: 85px;
   }
  }
+/* 
+ .sticky-accordion {
+  height: 200px;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  overflow-x: hidden;
+  width: 68px;
+  
+  &_container {
+    max-height: 200px;
+    overflow-y: auto;
+    white-space: nowrap;
+    width: 85px;
+    padding-right: 17px;
+
+    &::-webkit-scrollbar { width: 0 !important }
+    -ms-overflow-style: none;
+  }
+}
+
+@-moz-document url-prefix() {
+    .sticky-accordion {
+      &_container {
+        width: 100px;
+
+        @supports (-moz-osx-font-smoothing:auto) { 
+          width: 85px;
+        }
+      }
+  }
+} */
