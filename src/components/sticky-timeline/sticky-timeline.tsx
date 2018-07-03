@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as moment from 'moment';
-import StickyAccordion from '../accordion';
-
+// import StickyAccordion from '../accordion';
+import StickyList from 'react-sticky-list';
 
 const styles = `
 .timeline {
@@ -85,32 +85,20 @@ export default class StyckyTimeLine extends React.Component<Props, null> {
       return acc.concat(dayList);
     },[]);
 
-
-  private handleTodayClick = (event:React.MouseEvent<HTMLHeadingElement>) => {
-    const { idx } = event.currentTarget.dataset;
-    console.log('idx', idx )
-  }
-
   render() {
     const { value, monthCount } = this.props;
-    const calendar = this.renderCalendar(value, monthCount)
-
-    calendar.unshift(
-      <h2 key="today" onClick={this.handleTodayClick}>Today</h2>
-    )
+    const calendar = this.renderCalendar(value, monthCount);
 
     return (
       <div className="timeline" ref={el => this.container = el}>
-        <StickyAccordion>
+        <StickyList>
           {calendar}
-        </StickyAccordion>
+        </StickyList>
         <style>{styles}</style>
       </div>
     )
   }
 }
-
-
 
 interface StickyDateProps {
   className?: string;

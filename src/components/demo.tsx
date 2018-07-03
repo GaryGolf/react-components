@@ -6,8 +6,8 @@ import * as React from 'react'
 // import StickyTimeLine from './sticky-timeline';
 // import Accordion from './test';
 import * as moment from 'moment'
-// import StickyTimeline from './sticky-timeline';
-import ReactStickyList from 'react-sticky-list';
+import StickyTimeline from './sticky-timeline';
+
 
 type Moment = moment.Moment;
 type DateType = number | string | Date | Moment
@@ -44,12 +44,11 @@ export default class Demo extends React.Component<Props, State> {
               />         */}
               {/* <StickyTimeLine /> */}
               {/* <Accordion/> */}
-              {/* <StickyTimeline
+              <StickyTimeline
                 value={this.state.date}
-                monthCount={6}
+                monthCount={3}
                 onChange={this.handleDateChange}
-              /> */}
-              <ReactStickyList/>
+              />
             </div>
         )
     }
