@@ -1,13 +1,13 @@
 import * as React from 'react';
 import * as moment from 'moment';
-// import StickyAccordion from '../accordion';
 import StickyList from 'react-sticky-list';
+import StickyDate from './sticky-date';
 
 const styles = `
 .timeline {
   background: lightblue;
-  height: 300px;
-  width: 300px;
+  height: 400px;
+  width: 100px;
   position: relative;
   margin: 0 auto;
   overflow: scroll;
@@ -72,12 +72,12 @@ export default class StyckyTimeLine extends React.Component<Props, null> {
         .filter(d => moment().isBefore(d,'days'))
         .map(d => (
           <StickyDate
-            key={d.format('DD MMMM YYYY')}
+            date={moment(d)}
+            key={moment(d).format('DD MMMM YYYY')}
             className={[
               'sticky-date', 
               moment(value).isSame(d, 'day') ? '__active' : ''
             ].join(' ')}
-            date={d}
             onClick={this.handleDateClick}
           />
         ))
@@ -98,20 +98,4 @@ export default class StyckyTimeLine extends React.Component<Props, null> {
       </div>
     )
   }
-}
-
-interface StickyDateProps {
-  className?: string;
-  date:Moment;
-  onClick:(date:Moment) => void;
-}
-const StickyDate:React.SFC<StickyDateProps> = props => {
-
-  const handleClick = () => props.onClick(props.date)
-
-  return (
-    <div className={props.className || ''} onClick={handleClick}>
-     {props.date.format('DD MMMM')}
-    </div>
-  )
 }
