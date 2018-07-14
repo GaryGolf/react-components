@@ -5,12 +5,12 @@ import * as React from 'react'
 // import Timeline from './timeline/timeline-datepicker';
 // import StickyTimeLine from './sticky-timeline';
 // import Accordion from './test';
-import * as moment from 'moment'
+// import * as moment from 'moment'
 import StickyTimeline from './sticky-timeline';
 
 
-type Moment = moment.Moment;
-type DateType = number | string | Date | Moment
+// type Moment = moment.Moment;
+type DateType = number | string | Date;
 
 interface Props {}
 interface State {

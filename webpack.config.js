@@ -9,7 +9,7 @@ const outPath = path.join(__dirname, './dist')
 
 const devCilentConfig = {
   mode: 'development',
-  entry: './src/client.tsx',
+  entry: 'index.tsx',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build'),
@@ -28,15 +28,8 @@ const devCilentConfig = {
 
   module: {
     rules: [
-   
-      { test: /\.tsx?$/, loader: 'awesome-typescript-loader' },
-      { test: /\.css$/, use: [ { loader: 'style-loader' } ,
-        { loader: 'css-loader', options: {
-          module: true,
-          sourceMap: true,
-          localIdentName: '[local]__[hash:base64:5]'
-        } }
-      ]}
+      { test: /\.tsx?$/, loader: 'ts-loader' },
+      { test: /\.css$/,  loader: 'css-loader' }
     ]
   },
 
@@ -68,7 +61,7 @@ const prodCilentConfig = {
   module: {
     rules: [
       { test: /\.tsx?$/, loader: 'ts-loader' },
-      { test: /\.css$/, loader: 'style-loader' }
+      { test: /\.css$/, loader: 'css-loader' }
     ]
   },
 
