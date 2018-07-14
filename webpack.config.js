@@ -1,6 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 const sourcePath = path.join(__dirname, './src')
 const PRODUCTION = process.argv.indexOf('-p') >= 0
@@ -9,7 +11,7 @@ const outPath = path.join(__dirname, './dist')
 
 const devCilentConfig = {
   mode: 'development',
-  entry: 'index.tsx',
+  entry: './src/index.tsx',
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'build'),
@@ -45,7 +47,7 @@ const devCilentConfig = {
 
 const prodCilentConfig = {
   mode: 'production',
-  entry: 'index.tsx',
+  entry: './src/index.tsx',
   output: {
     filename: 'bundle.js',
     path: path.resolve('./build/static'),
