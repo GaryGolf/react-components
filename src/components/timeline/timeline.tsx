@@ -130,7 +130,8 @@ export default class TimeLine extends React.Component<Props, State> {
 
   private handleUpClick = () => {
     this.dir = true;
-    this.setState(({ date, month }) => {
+    this.setState((state:State) => {
+      const { date, month } = state;
       if (this.isWeekend(month) || date == 0) return { 
         month: month - 1, 
         date: this.isWeekend(month - 1) ? 0 : this.countDays(month - 1) - 1 
